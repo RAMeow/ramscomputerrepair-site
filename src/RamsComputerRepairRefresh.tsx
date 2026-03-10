@@ -762,10 +762,8 @@ export default function RamsComputerRepairRefresh() {
                                 </button>
                               </div>
                             </div>
-                          ))}
+                          ))
                         </div>
-                      )}
-                    </div>
 
                     {selectedPreview && (
                       <div
@@ -847,7 +845,6 @@ export default function RamsComputerRepairRefresh() {
                           <strong>{selectedPreview ? 1 : 0}</strong>
                           <span className="portal-file-meta">Preview open</span>
                         </div>
-                      </div>
             </section>
           </main>
         ) : (
