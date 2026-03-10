@@ -221,8 +221,7 @@ function PortalNavCard({ title, description, tag }: { title: string; description
 
 export default function RamsComputerRepairRefresh() {
   const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
-  const isPortalRoute = currentPath.toLowerCase() === siteConfig.portalPath.toLowerCase();
-
+  const isPortalRoute = currentPath.toLowerCase().startsWith(siteConfig.portalPath.toLowerCase());
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "ComputerRepair",
@@ -237,25 +236,7 @@ export default function RamsComputerRepairRefresh() {
     },
     areaServed: serviceAreas,
     url: siteConfig.domain,
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.9",
-      reviewCount: "100",
-    },
-  };
-
-  const reviewSchema = {
-    "@context": "https://schema.org",
-    "@type": "AggregateRating",
-    itemReviewed: {
-      "@type": "ComputerRepair",
-      name: siteConfig.businessName,
-      url: siteConfig.domain,
-    },
-    ratingValue: "4.9",
-    bestRating: "5",
-    reviewCount: "100",
-  };
+      };
 
   const portalCards = [
     {
@@ -411,9 +392,7 @@ Sitemap: https://www.ramscomputerrepair.net/sitemap.xml`,
         }
       `}</style>
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }} />
-
+      
       <div className="page">
         <div className="bg">
           <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" preserveAspectRatio="none">
@@ -463,7 +442,7 @@ Sitemap: https://www.ramscomputerrepair.net/sitemap.xml`,
                       <span className="sub-brand">Secure Owner Portal V2</span>
                     </div>
                   </div>
-                  <a href={siteConfig.domain} className="button-ghost">Back to Main Site</a>
+                 <a href="/" className="button-ghost">Back to Main Site</a>
                 </div>
 
                 <div className="portal-shell">
