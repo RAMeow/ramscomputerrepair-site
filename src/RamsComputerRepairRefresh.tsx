@@ -418,7 +418,7 @@ export default function RamsComputerRepairRefresh() {
         .hero-accent { display:block; color:#67e8f9; }
         .hero-text, .section-text, .card p, .panel-text, .small-text, .portal-copy { color:#cbd5e1; line-height:1.7; }
         .hero-text { font-size: clamp(17px, 2.5vw, 20px); max-width:720px; margin:0 0 28px; }
-        .hero-highlights, .grid4, .grid3, .grid2, .three-stats, .reviews-right, .portal-shell, .portal-list, .portal-dashboard, .portal-stat-grid, .artifact-grid { display:grid; gap:16px; }
+        .hero-highlights, .grid4, .grid3, .grid2, .three-stats, .reviews-right, .portal-shell, .portal-list, .portal-dashboard, .portal-stat-grid { display:grid; gap:16px; }
         .hero-highlights { grid-template-columns: repeat(2, minmax(0,1fr)); max-width:700px; margin-top:24px; }
         .grid4 { grid-template-columns: repeat(4, minmax(0,1fr)); margin-top:28px; }
         .grid3 { grid-template-columns: repeat(3, minmax(0,1fr)); margin-top:28px; }
@@ -427,7 +427,6 @@ export default function RamsComputerRepairRefresh() {
         .reviews-right { grid-template-columns: 1fr 240px; align-items:start; gap:24px; }
         .portal-shell { grid-template-columns: .95fr 1.05fr; margin-top:28px; }
         .portal-stat-grid { grid-template-columns: repeat(3, minmax(0,1fr)); gap:12px; }
-        .artifact-grid { grid-template-columns: repeat(3, minmax(0,1fr)); gap:12px; }
         .highlight-card, .card.light, .stat-card, .portal-stat, .artifact-card, .portal-nav-card { border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.05); border-radius:20px; padding:18px; }
         .card.dark, .panel, .qr-box, .cta-box, .portal-panel { border:1px solid rgba(255,255,255,.1); background:rgba(15,23,42,.82); border-radius:24px; padding:24px; }
         .card h3, .section-title, .panel-title, .portal-title { margin:0; font-weight:800; }
