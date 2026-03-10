@@ -431,106 +431,62 @@ Sitemap: https://www.ramscomputerrepair.net/sitemap.xml`,
         </div>
 
         {isPortalRoute ? (
-          <main className="page" style={{ background: "transparent" }}>
-            <section className="section-dark" style={{ minHeight: "100vh", paddingTop: 40 }}>
-              <div className="container">
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap", marginBottom: 24 }}>
-                  <div className="logo-row">
-                    <img src={siteConfig.logoSrc} alt={siteConfig.businessName} className="logo" />
-                    <div>
-                      <span className="brand-name">{siteConfig.businessName}</span>
-                      <span className="sub-brand">Secure Owner Portal V2</span>
-                    </div>
-                  </div>
-                 <a href="/" className="button-ghost">Back to Main Site</a>
-                </div>
+  <main className="page" style={{ background: "transparent" }}>
+    <section className="section-dark" style={{ minHeight: "100vh", paddingTop: 40 }}>
+      <div className="container">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap", marginBottom: 24 }}>
+          <div className="logo-row">
+            <img src={siteConfig.logoSrc} alt={siteConfig.businessName} className="logo" />
+            <div>
+              <span className="brand-name">{siteConfig.businessName}</span>
+              <span className="sub-brand">RAMeow Secure Portal</span>
+            </div>
+          </div>
+          <a href="/" className="button-ghost">Back to Main Site</a>
+        </div>
 
-                <div className="portal-shell">
-                  <div className="portal-panel">
-                    <p className="portal-kicker">{siteConfig.portalPath}</p>
-                    <h1 className="portal-title">RAMeow secure portal</h1>
-                    <p className="portal-copy">This V2 portal route is reserved for owner access and future secure file management. It is designed for Cloudflare Access, Workers, and R2 integration so business files can be uploaded, organized, and retrieved from a private dashboard.</p>
+        <div className="portal-panel">
+          <p className="portal-kicker">/RAMeow</p>
+          <h1 className="portal-title">Owner Portal</h1>
+          <p className="portal-copy">
+            This is the live RAMeow portal area. Next step is connecting file upload,
+            file listing, and downloads using Cloudflare Pages Functions and R2.
+          </p>
 
-                    <div className="portal-list" style={{ marginTop: 22 }}>
-                      {portalCards.map((card) => (
-                        <PortalNavCard key={card.title} title={card.title} description={card.description} tag={card.tag} />
-                      ))}
-                    </div>
+          <div style={{ marginTop: 24 }}>
+            <form>
+              <input
+                type="file"
+                style={{
+                  display: "block",
+                  marginBottom: 12,
+                  padding: 14,
+                  borderRadius: 12,
+                  border: "1px solid rgba(255,255,255,.15)",
+                  background: "#0f172a",
+                  color: "white",
+                  width: "100%"
+                }}
+              />
+              <button type="button" className="button-primary">
+                Upload File
+              </button>
+            </form>
+          </div>
 
-                    <div className="portal-form">
-                      <label className="portal-label">Owner email</label>
-                      <input className="portal-input" type="email" placeholder="owner@ramscomputerrepair.net" />
-                      <label className="portal-label">Access password</label>
-                      <input className="portal-input" type="password" placeholder="Enter secure password" />
-                      <div className="portal-actions">
-                        <a href="#" className="button-primary">Sign In Preview</a>
-                        <a href="#" className="button-ghost">Cloudflare Access Ready</a>
-                      </div>
-                    </div>
-
-                    <p className="portal-note">This route is a secure front-end build target only. Real authentication, encrypted upload handling, and permission checks should be wired to a backend before live use.</p>
-                  </div>
-
-                  <div className="portal-panel">
-                    <p className="portal-kicker">Dashboard Mockup</p>
-                    <h2 className="portal-title">Owner file vault</h2>
-
-                    <div className="portal-dashboard">
-                      <div className="portal-stat-grid">
-                        <div className="portal-stat"><strong>24</strong><span className="portal-file-meta">Saved files</span></div>
-                        <div className="portal-stat"><strong>6</strong><span className="portal-file-meta">Recent uploads</span></div>
-                        <div className="portal-stat"><strong>3</strong><span className="portal-file-meta">Folders</span></div>
-                      </div>
-
-                      <div className="portal-upload-box">
-                        Future secure upload area for contracts, forms, customer backups, and private business documents.
-                      </div>
-
-                      <div className="portal-file-list">
-                        <div className="portal-file-row">
-                          <div>
-                            <strong>repair-intake-form.pdf</strong>
-                            <div className="portal-file-meta">Uploaded March 2026 • PDF document</div>
-                          </div>
-                          <span className="portal-tag">Forms</span>
-                        </div>
-                        <div className="portal-file-row">
-                          <div>
-                            <strong>managed-service-agreement.docx</strong>
-                            <div className="portal-file-meta">Uploaded March 2026 • Word document</div>
-                          </div>
-                          <span className="portal-tag">Contracts</span>
-                        </div>
-                        <div className="portal-file-row">
-                          <div>
-                            <strong>customer-backup-archive.zip</strong>
-                            <div className="portal-file-meta">Uploaded March 2026 • Compressed archive</div>
-                          </div>
-                          <span className="portal-tag">Backups</span>
-                        </div>
-                      </div>
-
-                      <div className="artifact-grid">
-                        <div className="artifact-card">
-                          <strong>robots.txt</strong>
-                          <pre>{deploymentArtifacts.robots}</pre>
-                        </div>
-                        <div className="artifact-card">
-                          <strong>sitemap.xml</strong>
-                          <pre>{deploymentArtifacts.sitemap}</pre>
-                        </div>
-                        <div className="artifact-card">
-                          <strong>Cloudflare Access + R2</strong>
-                          <pre>{deploymentArtifacts.accessNotes}</pre>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </main>
-        ) : (
+          <div style={{ marginTop: 32 }}>
+            <h2 style={{ marginBottom: 12 }}>Files</h2>
+            <ul style={{ lineHeight: 1.9 }}>
+              <li>repair-intake-form.pdf</li>
+              <li>managed-service-agreement.docx</li>
+              <li>customer-backup-archive.zip</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+) : (
           <>
             <header className="header">
               <div className="container header-inner">
