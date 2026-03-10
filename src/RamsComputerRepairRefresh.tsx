@@ -1,11 +1,6 @@
 import logo from "../assets/logo.png";
 import reviewQr from "../assets/review-qr.png";
-import React, { useEffect, useState } from "react";
-
-type Brand = {
-  name: string;
-  src: string;
-};
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 type InfoCard = {
   title: string;
@@ -16,6 +11,7 @@ type SiteConfig = {
   businessName: string;
   phoneDisplay: string;
   phoneHref: string;
+  location: string;
   email: string;
   domain: string;
   logoSrc: string;
@@ -25,7 +21,13 @@ type SiteConfig = {
   portalPath: string;
 };
 
-const siteConfig = {
+type PortalFile = {
+  key: string;
+  size: number;
+  uploaded: string;
+};
+
+const siteConfig: SiteConfig = {
   businessName: "RAM'S COMPUTER REPAIR",
   phoneDisplay: "956-244-5094",
   phoneHref: "tel:9562445094",
@@ -210,7 +212,15 @@ function DarkInfoCard({ title, description }: InfoCard) {
   );
 }
 
-function PortalNavCard({ title, description, tag }: { title: string; description: string; tag: string }) {
+function PortalNavCard({
+  title,
+  description,
+  tag,
+}: {
+  title: string;
+  description: string;
+  tag: string;
+}) {
   return (
     <div className="portal-nav-card">
       <div className="portal-nav-tag">{tag}</div>
@@ -222,7 +232,8 @@ function PortalNavCard({ title, description, tag }: { title: string; description
 
 export default function RamsComputerRepairRefresh() {
   const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
-  const isPortalRoute = currentPath.toLowerCase().startsWith(siteConfig.portalPath.toLowerCase()); 
+  const isPortalRoute = currentPath.toLowerCase().startsWith(siteConfig.portalPath.toLowerCase());
+
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "ComputerRepair",
@@ -237,7 +248,7 @@ export default function RamsComputerRepairRefresh() {
     },
     areaServed: serviceAreas,
     url: siteConfig.domain,
-      };
+  };
 
   const portalCards = [
     {
@@ -280,43 +291,119 @@ Sitemap: https://www.ramscomputerrepair.net/sitemap.xml`,
 3. Route uploads through a Worker bound to an R2 bucket
 4. Keep the public homepage outside Access protection`,
   };
-const [files, setFiles] = useState<{ key: string; size: number; uploaded: string }[]>([]);
 
-async function loadFiles() {
-  const res = await fetch("/api/files");
-  if (!res.ok) return;
+  const [files, setFiles] = useState<PortalFile[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [dragActive, setDragActive] = useState(false);
+  const [selectedPreview, setSelectedPreview] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const data = await res.json();
-  setFiles(data.files || []);
-}
+  async function loadFiles() {
+    const res = await fetch("/api/files");
+    if (!res.ok) return;
 
-async function deleteFile(key: string) {
-  const confirmed = window.confirm(`Delete "${key}"?`);
-  if (!confirmed) return;
-
-  const res = await fetch("/api/delete", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ key }),
-  });
-
-  if (!res.ok) {
-    alert("Delete failed.");
-    return;
+    const data = await res.json();
+    setFiles(data.files || []);
   }
 
-  await loadFiles();
-}
+  async function deleteFile(key: string) {
+    const confirmed = window.confirm(`Delete "${key}"?`);
+    if (!confirmed) return;
 
-useEffect(() => {
-  if (isPortalRoute) {
-    loadFiles();
+    const res = await fetch("/api/delete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ key }),
+    });
+
+    if (!res.ok) {
+      alert("Delete failed.");
+      return;
+    }
+
+    if (selectedPreview === key) {
+      setSelectedPreview(null);
+    }
+
+    await loadFiles();
   }
-}, [isPortalRoute]);
 
-return (
+  function inferPreviewType(key: string) {
+    const lower = key.toLowerCase();
+
+    if (
+      lower.endsWith(".png") ||
+      lower.endsWith(".jpg") ||
+      lower.endsWith(".jpeg") ||
+      lower.endsWith(".gif") ||
+      lower.endsWith(".webp")
+    ) {
+      return "image";
+    }
+
+    if (lower.endsWith(".pdf")) {
+      return "pdf";
+    }
+
+    return "other";
+  }
+
+  async function uploadSelectedFile(file: File) {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    setUploading(true);
+    setUploadProgress(0);
+
+    await new Promise<void>((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "/api/upload");
+
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const percent = Math.round((event.loaded / event.total) * 100);
+          setUploadProgress(percent);
+        }
+      };
+
+      xhr.onload = async () => {
+        setUploading(false);
+
+        if (xhr.status >= 200 && xhr.status < 300) {
+          setUploadProgress(100);
+          await loadFiles();
+          resolve();
+        } else {
+          reject(new Error("Upload failed"));
+        }
+      };
+
+      xhr.onerror = () => {
+        setUploading(false);
+        reject(new Error("Upload failed"));
+      };
+
+      xhr.send(formData);
+    });
+  }
+
+  const filteredFiles = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return files;
+    return files.filter((file) => file.key.toLowerCase().includes(term));
+  }, [files, searchTerm]);
+
+  useEffect(() => {
+    if (isPortalRoute) {
+      loadFiles();
+    }
+  }, [isPortalRoute]);
+
+  return (
     <>
       <style>{`
         * { box-sizing: border-box; }
@@ -324,7 +411,6 @@ return (
         .page { position: relative; min-height: 100vh; overflow: hidden; background: #020617; color: #fff; font-family: Arial, Helvetica, sans-serif; }
         .bg { position: absolute; inset: 0; pointer-events: none; opacity: .12; }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; }
-        .hidden { display: none; }
         .header { position: sticky; top: 0; z-index: 50; border-bottom: 1px solid rgba(255,255,255,.1); background: rgba(2,6,23,.92); backdrop-filter: blur(8px); }
         .header-inner { display: flex; flex-direction: column; gap: 14px; padding: 16px 0; }
         .header-top { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
@@ -336,7 +422,7 @@ return (
         .nav a, .button-mini { color:#e2e8f0; text-decoration:none; border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:18px 26px; font-size:18px; font-weight:800; background:rgba(255,255,255,.06); transition:all .18s ease; }
         .nav a:hover, .button-mini:hover { background:#22d3ee; color:#020617; border-color:#22d3ee; transform:translateY(-1px); }
         .button-small, .button-primary { display:inline-block; background:#22d3ee; color:#020617; text-decoration:none; border-radius:14px; padding:12px 18px; font-weight:800; box-shadow:0 10px 30px rgba(34,211,238,.25); }
-        .button-primary { padding:14px 24px; border-radius:16px; }
+        .button-primary { padding:14px 24px; border-radius:16px; border:0; cursor:pointer; }
         .review-button { display:inline-flex; align-items:center; gap:12px; padding:18px 28px; font-size:18px; font-weight:900; border-radius:18px; }
         .google-badge { display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:999px; background:#fff; color:#2563eb; font-size:22px; font-weight:900; flex:0 0 auto; }
         .review-stars-inline { font-size:18px; color:#fcd34d; letter-spacing:1px; }
@@ -356,7 +442,7 @@ return (
         .hero-accent { display:block; color:#67e8f9; }
         .hero-text, .section-text, .card p, .panel-text, .small-text, .portal-copy { color:#cbd5e1; line-height:1.7; }
         .hero-text { font-size: clamp(17px, 2.5vw, 20px); max-width:720px; margin:0 0 28px; }
-        .hero-highlights, .grid4, .grid3, .grid2, .three-stats, .reviews-right, .portal-shell, .portal-list, .portal-form, .portal-dashboard, .portal-stat-grid, .portal-file-list, .artifact-grid { display:grid; gap:16px; }
+        .hero-highlights, .grid4, .grid3, .grid2, .three-stats, .reviews-right, .portal-shell, .portal-list, .portal-dashboard, .portal-stat-grid, .artifact-grid { display:grid; gap:16px; }
         .hero-highlights { grid-template-columns: repeat(2, minmax(0,1fr)); max-width:700px; margin-top:24px; }
         .grid4 { grid-template-columns: repeat(4, minmax(0,1fr)); margin-top:28px; }
         .grid3 { grid-template-columns: repeat(3, minmax(0,1fr)); margin-top:28px; }
@@ -366,7 +452,7 @@ return (
         .portal-shell { grid-template-columns: .95fr 1.05fr; margin-top:28px; }
         .portal-stat-grid { grid-template-columns: repeat(3, minmax(0,1fr)); gap:12px; }
         .artifact-grid { grid-template-columns: repeat(3, minmax(0,1fr)); gap:12px; }
-        .highlight-card, .card.light, .stat-card, .portal-list-item, .portal-stat, .portal-file-row, .artifact-card, .portal-nav-card { border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.05); border-radius:20px; padding:18px; }
+        .highlight-card, .card.light, .stat-card, .portal-stat, .artifact-card, .portal-nav-card { border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.05); border-radius:20px; padding:18px; }
         .card.dark, .panel, .qr-box, .cta-box, .portal-panel { border:1px solid rgba(255,255,255,.1); background:rgba(15,23,42,.82); border-radius:24px; padding:24px; }
         .card h3, .section-title, .panel-title, .portal-title { margin:0; font-weight:800; }
         .card h3 { font-size:20px; }
@@ -396,16 +482,9 @@ return (
         .stars { font-size:28px; color:#fcd34d; }
         .qr-box { text-align:center; }
         .qr-image { width:100%; max-width:240px; border-radius:14px; border:1px solid rgba(255,255,255,.1); background:#fff; padding:8px; }
-        .portal-label { font-size:13px; color:#cbd5e1; font-weight:700; }
-        .portal-input { width:100%; border:1px solid rgba(255,255,255,.14); background:rgba(2,6,23,.7); color:#fff; border-radius:14px; padding:14px 16px; font-size:14px; outline:none; }
-        .portal-input::placeholder { color:#94a3b8; }
-        .portal-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:4px; }
         .portal-note, .portal-file-meta { font-size:13px; color:#94a3b8; line-height:1.6; margin-top:4px; }
         .portal-stat strong { display:block; font-size:22px; color:#67e8f9; }
-        .portal-file-row { display:flex; justify-content:space-between; align-items:center; gap:14px; border-radius:14px; padding:14px 16px; }
-        .portal-tag, .portal-nav-tag { border:1px solid rgba(103,232,249,.25); background:rgba(34,211,238,.08); color:#bae6fd; border-radius:999px; padding:6px 10px; font-size:12px; white-space:nowrap; display:inline-block; }
-        .portal-upload-box { border:1px dashed rgba(103,232,249,.35); background:rgba(34,211,238,.06); border-radius:18px; padding:18px; text-align:center; color:#cbd5e1; }
-        .artifact-card pre { margin:10px 0 0; white-space:pre-wrap; word-break:break-word; font-size:12px; line-height:1.55; color:#cbd5e1; }
+        .portal-nav-tag { border:1px solid rgba(103,232,249,.25); background:rgba(34,211,238,.08); color:#bae6fd; border-radius:999px; padding:6px 10px; font-size:12px; white-space:nowrap; display:inline-block; }
         .floating-call { position:fixed; right:16px; bottom:16px; z-index:60; background:#22d3ee; color:#020617; text-decoration:none; font-weight:900; border-radius:999px; padding:16px 22px; box-shadow:0 14px 30px rgba(34,211,238,.35); }
         @media (max-width: 1024px) {
           .hero-grid, .reviews-grid, .cta-grid, .portal-shell { grid-template-columns: 1fr; }
@@ -428,7 +507,11 @@ return (
         }
       `}</style>
 
-      
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
+      />
+
       <div className="page">
         <div className="bg">
           <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" preserveAspectRatio="none">
@@ -467,138 +550,350 @@ return (
         </div>
 
         {isPortalRoute ? (
-      
-  <main className="page" style={{ background: "transparent" }}>
-    <section className="section-dark" style={{ minHeight: "100vh", paddingTop: 40 }}>
-      <div className="container">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap", marginBottom: 24 }}>
-          <div className="logo-row">
-            <img src={siteConfig.logoSrc} alt={siteConfig.businessName} className="logo" />
-            <div>
-              <span className="brand-name">{siteConfig.businessName}</span>
-              <span className="sub-brand">RAMeow Secure Portal</span>
-            </div>
-          </div>
-          <a href="/" className="button-ghost">Back to Main Site</a>
-        </div>
+          <main className="page" style={{ background: "transparent" }}>
+            <section className="section-dark" style={{ minHeight: "100vh", paddingTop: 40 }}>
+              <div className="container">
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 16,
+                    flexWrap: "wrap",
+                    marginBottom: 24,
+                  }}
+                >
+                  <div className="logo-row">
+                    <img src={siteConfig.logoSrc} alt={siteConfig.businessName} className="logo" />
+                    <div>
+                      <span className="brand-name">{siteConfig.businessName}</span>
+                      <span className="sub-brand">RAMeow Secure Portal</span>
+                    </div>
+                  </div>
+                  <a href="/" className="button-ghost">Back to Main Site</a>
+                </div>
 
-        <div className="portal-panel">
-          <p className="portal-kicker">/RAMeow</p>
-          <h1 className="portal-title">Owner Portal</h1>
-          <p className="portal-copy">
-            This is the live RAMeow portal area. RAM'S EYES ONLY! KEEP OUT!
-          </p>
+                <div className="portal-shell">
+                  <div className="portal-panel">
+                    <p className="portal-kicker">/RAMeow</p>
+                    <h1 className="portal-title">Owner Portal</h1>
+                    <p className="portal-copy">
+                      This is the live RAMeow portal area. RAM&apos;S EYES ONLY! KEEP OUT!
+                    </p>
 
-          <div style={{ marginTop: 24 }}>
-            <form
-  onSubmit={async (e) => {
-    e.preventDefault();
+                    <div className="portal-list" style={{ marginTop: 22 }}>
+                      {portalCards.map((card) => (
+                        <PortalNavCard
+                          key={card.title}
+                          title={card.title}
+                          description={card.description}
+                          tag={card.tag}
+                        />
+                      ))}
+                    </div>
 
-    const form = e.currentTarget;
-    const input = form.querySelector('input[type="file"]') as HTMLInputElement;
+                    <div style={{ marginTop: 24 }}>
+                      <div
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          setDragActive(true);
+                        }}
+                        onDragLeave={() => setDragActive(false)}
+                        onDrop={async (e) => {
+                          e.preventDefault();
+                          setDragActive(false);
 
-    if (!input.files?.length) {
-      alert("Please choose a file first.");
-      return;
-    }
+                          const droppedFile = e.dataTransfer.files?.[0];
+                          if (!droppedFile) return;
 
-    const formData = new FormData();
-    formData.append("file", input.files[0]);
+                          try {
+                            await uploadSelectedFile(droppedFile);
+                            alert("Upload successful.");
+                          } catch {
+                            alert("Upload failed.");
+                          }
+                        }}
+                        style={{
+                          border: dragActive ? "2px solid #22d3ee" : "2px dashed rgba(255,255,255,.2)",
+                          background: dragActive ? "rgba(34,211,238,.08)" : "rgba(255,255,255,.03)",
+                          borderRadius: 16,
+                          padding: 24,
+                          textAlign: "center",
+                          marginBottom: 16,
+                        }}
+                      >
+                        <p style={{ margin: 0, fontWeight: 700 }}>Drag and drop a file here</p>
+                        <p style={{ marginTop: 8, color: "#cbd5e1" }}>or use the button below</p>
 
-    const res = await fetch("/api/upload", {
-      method: "POST",
-      body: formData,
-    });
+                        <button
+                          type="button"
+                          className="button-primary"
+                          style={{ marginTop: 12 }}
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={uploading}
+                        >
+                          {uploading ? "Uploading..." : "Choose File"}
+                        </button>
 
-    if (!res.ok) {
-  alert("Upload failed.");
-  return;
-}
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          style={{ display: "none" }}
+                          onChange={async (e) => {
+                            const chosenFile = e.target.files?.[0];
+                            if (!chosenFile) return;
 
-alert("Upload successful.");
-input.value = "";
-await loadFiles();
-    
-  }}
->
-  <input
-    type="file"
-    style={{
-      display: "block",
-      marginBottom: 12,
-      padding: 14,
-      borderRadius: 12,
-      border: "1px solid rgba(255,255,255,.15)",
-      background: "#0f172a",
-      color: "white",
-      width: "100%"
-    }}
-  />
-  <button type="submit" className="button-primary">
-    Upload File
-  </button>
-</form>
-          </div>
+                            try {
+                              await uploadSelectedFile(chosenFile);
+                              alert("Upload successful.");
+                            } catch {
+                              alert("Upload failed.");
+                            } finally {
+                              e.currentTarget.value = "";
+                            }
+                          }}
+                        />
+                      </div>
 
-         <div style={{ marginTop: 32 }}>
-  <h2 style={{ marginBottom: 12 }}>Files</h2>
+                      {uploading && (
+                        <div style={{ marginTop: 12 }}>
+                          <div style={{ color: "#cbd5e1", marginBottom: 8 }}>
+                            Uploading... {uploadProgress}%
+                          </div>
+                          <div
+                            style={{
+                              width: "100%",
+                              height: 12,
+                              borderRadius: 999,
+                              background: "rgba(255,255,255,.12)",
+                              overflow: "hidden",
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: `${uploadProgress}%`,
+                                height: "100%",
+                                background: "#22d3ee",
+                                transition: "width .2s ease",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
 
-  {files.length === 0 ? (
-    <p style={{ color: "#cbd5e1" }}>No files uploaded yet.</p>
-  ) : (
-    <div style={{ display: "grid", gap: 12 }}>
-      {files.map((file) => (
-        <div
-          key={file.key}
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 12,
-            padding: 14,
-            borderRadius: 12,
-            border: "1px solid rgba(255,255,255,.1)",
-            background: "rgba(255,255,255,.04)"
-          }}
-        >
-          <div style={{ minWidth: 0 }}>
-            <a
-              href={`/api/download/${encodeURIComponent(file.key)}`}
-              style={{ color: "#67e8f9", textDecoration: "none", fontWeight: 600, wordBreak: "break-word" }}
-            >
-              {file.key}
-            </a>
-            <div style={{ color: "#94a3b8", fontSize: 12, marginTop: 6 }}>
-              {Math.round(file.size / 1024)} KB • {new Date(file.uploaded).toLocaleString()}
-            </div>
-          </div>
+                    <div style={{ marginTop: 32 }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          gap: 12,
+                          flexWrap: "wrap",
+                          marginBottom: 12,
+                        }}
+                      >
+                        <h2 style={{ margin: 0 }}>Files</h2>
 
-          <button
-            type="button"
-            onClick={() => deleteFile(file.key)}
-            style={{
-              border: 0,
-              background: "#ef4444",
-              color: "white",
-              padding: "10px 14px",
-              borderRadius: 10,
-              fontWeight: 700,
-              cursor: "pointer",
-              flexShrink: 0
-            }}
-          >
-            Delete
-          </button>
-        </div>
-      ))}
-    </div>
-  )}
-</div>
-        </div>
-      </div>
-    </section>
-  </main>
-) : (
+                        <input
+                          type="text"
+                          placeholder="Search files..."
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          style={{
+                            minWidth: 260,
+                            padding: 12,
+                            borderRadius: 12,
+                            border: "1px solid rgba(255,255,255,.15)",
+                            background: "#0f172a",
+                            color: "white",
+                          }}
+                        />
+                      </div>
+
+                      {filteredFiles.length === 0 ? (
+                        <p style={{ color: "#cbd5e1" }}>
+                          {searchTerm ? "No matching files found." : "No files uploaded yet."}
+                        </p>
+                      ) : (
+                        <div style={{ display: "grid", gap: 12 }}>
+                          {filteredFiles.map((file) => (
+                            <div
+                              key={file.key}
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                gap: 12,
+                                padding: 14,
+                                borderRadius: 12,
+                                border: "1px solid rgba(255,255,255,.1)",
+                                background: "rgba(255,255,255,.04)",
+                              }}
+                            >
+                              <div style={{ minWidth: 0 }}>
+                                <a
+                                  href={`/api/download/${encodeURIComponent(file.key)}`}
+                                  style={{
+                                    color: "#67e8f9",
+                                    textDecoration: "none",
+                                    fontWeight: 600,
+                                    wordBreak: "break-word",
+                                  }}
+                                >
+                                  {file.key}
+                                </a>
+                                <div style={{ color: "#94a3b8", fontSize: 12, marginTop: 6 }}>
+                                  {Math.max(1, Math.round(file.size / 1024))} KB •{" "}
+                                  {new Date(file.uploaded).toLocaleString()}
+                                </div>
+                              </div>
+
+                              <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+                                {(inferPreviewType(file.key) === "image" ||
+                                  inferPreviewType(file.key) === "pdf") && (
+                                  <button
+                                    type="button"
+                                    onClick={() => setSelectedPreview(file.key)}
+                                    style={{
+                                      border: 0,
+                                      background: "#334155",
+                                      color: "white",
+                                      padding: "10px 14px",
+                                      borderRadius: 10,
+                                      fontWeight: 700,
+                                      cursor: "pointer",
+                                    }}
+                                  >
+                                    Preview
+                                  </button>
+                                )}
+
+                                <button
+                                  type="button"
+                                  onClick={() => deleteFile(file.key)}
+                                  style={{
+                                    border: 0,
+                                    background: "#ef4444",
+                                    color: "white",
+                                    padding: "10px 14px",
+                                    borderRadius: 10,
+                                    fontWeight: 700,
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {selectedPreview && (
+                      <div
+                        style={{
+                          marginTop: 24,
+                          padding: 20,
+                          borderRadius: 16,
+                          border: "1px solid rgba(255,255,255,.1)",
+                          background: "rgba(255,255,255,.04)",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            gap: 12,
+                            marginBottom: 16,
+                          }}
+                        >
+                          <h3 style={{ margin: 0 }}>Preview</h3>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedPreview(null)}
+                            style={{
+                              border: 0,
+                              background: "#334155",
+                              color: "white",
+                              padding: "10px 14px",
+                              borderRadius: 10,
+                              fontWeight: 700,
+                              cursor: "pointer",
+                            }}
+                          >
+                            Close
+                          </button>
+                        </div>
+
+                        {inferPreviewType(selectedPreview) === "image" && (
+                          <img
+                            src={`/api/download/${encodeURIComponent(selectedPreview)}`}
+                            alt={selectedPreview}
+                            style={{ maxWidth: "100%", borderRadius: 12 }}
+                          />
+                        )}
+
+                        {inferPreviewType(selectedPreview) === "pdf" && (
+                          <iframe
+                            src={`/api/download/${encodeURIComponent(selectedPreview)}`}
+                            title={selectedPreview}
+                            style={{
+                              width: "100%",
+                              height: 600,
+                              border: "1px solid rgba(255,255,255,.1)",
+                              borderRadius: 12,
+                              background: "white",
+                            }}
+                          />
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="portal-panel">
+                    <p className="portal-kicker">Dashboard Mockup</p>
+                    <h2 className="portal-title">Owner file vault</h2>
+
+                    <div className="portal-dashboard">
+                      <div className="portal-stat-grid">
+                        <div className="portal-stat">
+                          <strong>{files.length}</strong>
+                          <span className="portal-file-meta">Saved files</span>
+                        </div>
+                        <div className="portal-stat">
+                          <strong>{filteredFiles.length}</strong>
+                          <span className="portal-file-meta">Visible files</span>
+                        </div>
+                        <div className="portal-stat">
+                          <strong>{selectedPreview ? 1 : 0}</strong>
+                          <span className="portal-file-meta">Preview open</span>
+                        </div>
+                      </div>
+
+                      <div className="artifact-grid">
+                        <div className="artifact-card">
+                          <strong>robots.txt</strong>
+                          <pre>{deploymentArtifacts.robots}</pre>
+                        </div>
+                        <div className="artifact-card">
+                          <strong>sitemap.xml</strong>
+                          <pre>{deploymentArtifacts.sitemap}</pre>
+                        </div>
+                        <div className="artifact-card">
+                          <strong>Cloudflare Access + R2</strong>
+                          <pre>{deploymentArtifacts.accessNotes}</pre>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </main>
+        ) : (
           <>
             <header className="header">
               <div className="container header-inner">
@@ -834,16 +1129,16 @@ await loadFiles();
                 <h2 className="section-title">Serving Harlingen and the Rio Grande Valley</h2>
                 <p className="section-text">Computer repair and small business IT support for customers in Harlingen and surrounding RGV communities.</p>
 
-                <div style={{marginTop:28,borderRadius:18,overflow:"hidden",border:"1px solid rgba(255,255,255,.1)"}}>
+                <div style={{ marginTop: 28, borderRadius: 18, overflow: "hidden", border: "1px solid rgba(255,255,255,.1)" }}>
                   <iframe
                     title="Harlingen Texas Service Area Map"
                     src="https://www.google.com/maps?q=Harlingen%20Texas&output=embed"
                     width="100%"
                     height="380"
-                    style={{border:0}}
+                    style={{ border: 0 }}
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                  ></iframe>
+                  />
                 </div>
 
                 <div className="chips" style={{ marginTop: 22 }}>
