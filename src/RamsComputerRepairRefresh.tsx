@@ -1,0 +1,833 @@
+type Brand = {
+  name: string;
+  src: string;
+};
+
+type InfoCard = {
+  title: string;
+  description: string;
+};
+
+type SiteConfig = {
+  businessName: string;
+  phoneDisplay: string;
+  phoneHref: string;
+  email: string;
+  domain: string;
+  logoSrc: string;
+  reviewQrSrc: string;
+  socialTitle: string;
+  socialDescription: string;
+  portalPath: string;
+};
+
+const embeddedLogoSrc = "data:image/png;base64,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";
+const embeddedReviewQrSrc = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA5oAAAOZCAYAAAB/YV8lAAAgAElEQVR4XuydB7gUVba2t9lRjIiK/kbMGRUVFCNmBLMXFB0UHRwcXBzMXFxczBczM3P3/3u3vW3p7q6p7uqq7u6q6u7urq6urr6O3g0nS2T7m+0m8z7nM+e85znnHPOOef8P4E4D0m9j+QfQH8nWm0t1Y5l8cWQbA6s9k1g9m9M5m+q4k5d0uR+9bYt1+eXl5f39/fn5+fGxsbJycnf39/9/f3W1tbKysqYmJjY2Njq6urg4ODIyMjf39/Z2dn5+fnr6+vQ0NDU1NTS0tL8/PzAwMDExMSwsLCQkJBISEhTU1N/f39jY2M/Pz9ra2sICAghISELCws2NjZ0dHSEhIQ+Pj5GRkaVlZV9fX2qqqqWlpZISEjl5eXv7++Li4sTExMSEhJmZmZubm5BQUGnp6cODg6SkpKQkJDe3t7h4eFAQEAwMDAzMzMzMzMGBgaqqqqRkZG0tLRhYWFVVVVHR0dMTExra2tiYmL9/f2EhIRWVlYxMTH6+vq5ubmCgoJtbW0ODg6Hh4cXFxcaGhoWFhY2NjYFBQWtra39/f0DAwM/Pz9SUlLf39+mpqbT09O2traRkZEiIiJmZmYSEhK7u7t6enpycnKioqJXV1e6urrm5ubk5OTp6ekyMjIXFxe9vb0fHx8fHx86OjoLCwtvb2+9vb0CAgKJiYmRkZGqqqq+vr6dnZ2UlJSWlpY9PT0/Pz8dHR0nJyc3NzcpKSn7+/uLi4tVVVUtLS2CgoK+vr7b29vR0dHj4+P5+fl4eHiWlpbOzs4lJSXAwMCIiIiZmZlmZmZ+fn4wMDCYmJiSkpK3t7eFhYVJSUnLy8vh4eGAgIB2dnYcHBzFxcW8vLx3d3dYWFi8vLzNzc2Hh4d6enru7u7w8PAzMzPx8fGhoaFxcXFoaGhycnL5+fmnp6dGRkYbGxsdHR1/f3+Li4sDAwN3d3dCQkL09PSgoKD9/f2VlZWwsLCcnJzY2NgLCwtwcHBubm6qqqpJSUkLCwthYWFYWFg6OjrCwsJbW1uSkpLQ0NDT09N0dHQ/Pz9gYGCWlpbMzMysrKzq6uoeHh5fX19JSUnv7+/d3d0FBQUiIiJPnTphh7IOr8V3R6fKkq4WmY9vL1J0rYy9Q3nL0hE7qW7d2lB9t8uE1g4b2J6oT4e8m3S9b3j9l8b2r+V5d2sQmH8f0m5Z9b0T3mYc8+u2V2f2Yv0b2m8d6m3o8o7s2n4m5T2s6n8m5d2f7m5m8u4P+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fnw==";
+
+const siteConfig: SiteConfig = {
+  businessName: "RAM'S COMPUTER REPAIR",
+  phoneDisplay: "956-244-5094",
+  phoneHref: "tel:9562445094",
+  email: "Ram@RamsComputerRepair.Net",
+  domain: "https://www.ramscomputerrepair.net",
+  logoSrc: embeddedLogoSrc,
+  reviewQrSrc: embeddedReviewQrSrc,
+  socialTitle: "RAM'S COMPUTER REPAIR | Computer Repair & Business IT Solutions",
+  socialDescription:
+    "Professional computer repair, virus removal, upgrades, laptop repair, custom PCs, and small business IT support in Harlingen and the Rio Grande Valley.",
+  portalPath: "/RAMeow",
+};
+
+const residentialServices: InfoCard[] = [
+  {
+    title: "Virus & Malware Removal",
+    description:
+      "Professional removal of viruses, spyware, ransomware, browser hijackers, and other malicious software that slow down your system or compromise your personal data.",
+  },
+  {
+    title: "Laptop & Desktop Repair",
+    description:
+      "Diagnosis and repair of common hardware and software problems including overheating systems, power issues, boot failures, and failing components.",
+  },
+  {
+    title: "Data Recovery",
+    description:
+      "Recovery of lost documents, photos, and important files from damaged drives, corrupted systems, or accidental deletion whenever possible.",
+  },
+  {
+    title: "Hardware Upgrades (SSD / RAM)",
+    description:
+      "Upgrade older systems with solid-state drives and additional memory to dramatically improve boot times, responsiveness, and overall performance.",
+  },
+  {
+    title: "Windows Troubleshooting",
+    description:
+      "Fix Windows errors, update problems, driver conflicts, startup failures, and other operating system issues that prevent your computer from running properly.",
+  },
+  {
+    title: "Laptop Screen Replacement",
+    description:
+      "Replacement of cracked, flickering, dim, or completely black laptop displays using compatible high-quality replacement screens.",
+  },
+  {
+    title: "System Tune-Ups & Optimization",
+    description:
+      "Comprehensive cleanup and optimization to remove unnecessary software, correct configuration problems, and restore fast system performance.",
+  },
+  {
+    title: "Custom PC Builds",
+    description:
+      "Design and assembly of custom desktop systems tailored for reliability, performance, gaming, creative work, or everyday computing.",
+  },
+  {
+    title: "Gaming & Performance PC Builds",
+    description:
+      "High-performance systems built for modern games, streaming, and demanding applications using trusted components and proper cooling.",
+  },
+  {
+    title: "Security Hardening & Protection",
+    description:
+      "Strengthen system security with proper configuration, malware protection, safe browsing practices, and protection against common threats.",
+  },
+  {
+    title: "Premium Antivirus Installation",
+    description:
+      "Installation and configuration of trusted antivirus and endpoint protection solutions to help prevent malware infections and security threats.",
+  },
+];
+
+const businessFocusCards: InfoCard[] = [
+  {
+    title: "Managed Support",
+    description:
+      "Reliable help for daily technical issues, workstation problems, and routine maintenance for small offices.",
+  },
+  {
+    title: "Network & Security",
+    description:
+      "Support for routers, wireless networking, endpoint protection, backups, and basic office security needs.",
+  },
+  {
+    title: "Upgrades & Deployment",
+    description:
+      "New computer setup, workstation replacement, software configuration, and hardware upgrades for growing businesses.",
+  },
+];
+
+const serviceAreas: string[] = [
+  "Harlingen",
+  "San Benito",
+  "Brownsville",
+  "McAllen",
+  "Rio Grande Valley",
+];
+
+const commonProblems: InfoCard[] = [
+  {
+    title: "Computer Running Slow",
+    description:
+      "Slow startup, lagging programs, or freezing systems are often caused by malware, failing drives, or outdated hardware.",
+  },
+  {
+    title: "Virus & Malware Infections",
+    description:
+      "Popups, browser redirects, and suspicious activity are common signs of malware infections that require professional removal.",
+  },
+  {
+    title: "Laptop Screen Damage",
+    description:
+      "Cracked displays, flickering screens, or black displays can often be repaired with professional screen replacement.",
+  },
+  {
+    title: "Computer Won't Start",
+    description:
+      "Boot failures, power issues, and operating system errors are common problems that can often be repaired without replacing the entire system.",
+  },
+  {
+    title: "Data Recovery",
+    description:
+      "Lost documents, photos, or important files may still be recoverable from failing or damaged storage devices.",
+  },
+  {
+    title: "Upgrade & Performance Issues",
+    description:
+      "Older systems can often be dramatically improved with SSD upgrades, memory increases, and system optimization.",
+  },
+];
+
+const trustReasons: InfoCard[] = [
+  {
+    title: "25+ Years of Experience",
+    description:
+      "Decades of hands-on repair and IT support experience serving residential and business customers across the Rio Grande Valley.",
+  },
+  {
+    title: "Free Basic Diagnostics",
+    description:
+      "Straightforward troubleshooting to identify common issues and recommend practical repair options before major work begins.",
+  },
+  {
+    title: "Local & Dependable",
+    description:
+      "Local service means clearer communication, faster response, and support from a real technician who understands the needs of RGV customers.",
+  },
+  {
+    title: "Business & Residential Support",
+    description:
+      "From home computers to office workstations and small business networks, service is tailored to the system and the client.",
+  },
+];
+
+const reviewStats = {
+  rating: "4.9–5.0",
+  reviewLabel: "Highly Rated by Local Customers",
+};
+
+const highlights: string[] = [
+  "25+ Years Experience",
+  "Free Basic Diagnostics",
+  "Same-Day Service Available",
+  "Residential & Business Support",
+];
+
+function ServiceCard({ title, description }: InfoCard) {
+  return (
+    <div className="card light">
+      <h3>{title}</h3>
+      <p>{description}</p>
+    </div>
+  );
+}
+
+function DarkInfoCard({ title, description }: InfoCard) {
+  return (
+    <div className="card dark">
+      <h3>{title}</h3>
+      <p>{description}</p>
+    </div>
+  );
+}
+
+function PortalNavCard({ title, description, tag }: { title: string; description: string; tag: string }) {
+  return (
+    <div className="portal-nav-card">
+      <div className="portal-nav-tag">{tag}</div>
+      <h3>{title}</h3>
+      <p>{description}</p>
+    </div>
+  );
+}
+
+export default function RamsComputerRepairRefresh() {
+  const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
+  const isPortalRoute = currentPath.toLowerCase() === siteConfig.portalPath.toLowerCase();
+
+  const localBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "ComputerRepair",
+    name: siteConfig.businessName,
+    telephone: "+1-956-244-5094",
+    email: siteConfig.email,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Harlingen",
+      addressRegion: "TX",
+      addressCountry: "US",
+    },
+    areaServed: serviceAreas,
+    url: siteConfig.domain,
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      reviewCount: "100",
+    },
+  };
+
+  const reviewSchema = {
+    "@context": "https://schema.org",
+    "@type": "AggregateRating",
+    itemReviewed: {
+      "@type": "ComputerRepair",
+      name: siteConfig.businessName,
+      url: siteConfig.domain,
+    },
+    ratingValue: "4.9",
+    bestRating: "5",
+    reviewCount: "100",
+  };
+
+  const portalCards = [
+    {
+      title: "Cloudflare Access protection",
+      description: "Protect the RAMeow route behind Cloudflare Zero Trust so only approved identities can reach the portal.",
+      tag: "Access",
+    },
+    {
+      title: "R2-backed file vault",
+      description: "Store forms, contracts, backups, invoices, and business files in Cloudflare R2 through a Worker-controlled upload flow.",
+      tag: "Storage",
+    },
+    {
+      title: "Deploy-ready SEO files",
+      description: "Keep robots.txt, sitemap.xml, and security headers ready for GitHub and Cloudflare Pages deployment.",
+      tag: "SEO",
+    },
+  ];
+
+  const deploymentArtifacts = {
+    robots: `User-agent: *
+Allow: /
+Sitemap: https://www.ramscomputerrepair.net/sitemap.xml`,
+    sitemap: `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.ramscomputerrepair.net/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.ramscomputerrepair.net${siteConfig.portalPath}</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.2</priority>
+  </url>
+</urlset>`,
+    accessNotes: `Cloudflare Access plan:
+1. Create a Zero Trust application for ${siteConfig.domain}${siteConfig.portalPath}
+2. Add an allow policy for your email identity
+3. Route uploads through a Worker bound to an R2 bucket
+4. Keep the public homepage outside Access protection`,
+  };
+
+  return (
+    <>
+      <style>{`
+        * { box-sizing: border-box; }
+        body { margin: 0; }
+        .page { position: relative; min-height: 100vh; overflow: hidden; background: #020617; color: #fff; font-family: Arial, Helvetica, sans-serif; }
+        .bg { position: absolute; inset: 0; pointer-events: none; opacity: .12; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; }
+        .hidden { display: none; }
+        .header { position: sticky; top: 0; z-index: 50; border-bottom: 1px solid rgba(255,255,255,.1); background: rgba(2,6,23,.92); backdrop-filter: blur(8px); }
+        .header-inner { display: flex; flex-direction: column; gap: 14px; padding: 16px 0; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .logo-row { display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .logo { height: 48px; width: auto; filter: drop-shadow(0 0 12px rgba(34,211,238,.18)); }
+        .brand-name { display:block; font-size: 18px; font-weight: 700; letter-spacing: .3px; }
+        .sub-brand { display:block; font-size: 11px; text-transform: uppercase; letter-spacing: 3px; color: #67e8f9; }
+        .nav { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+        .nav a, .button-mini { color:#e2e8f0; text-decoration:none; border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:18px 26px; font-size:18px; font-weight:800; background:rgba(255,255,255,.06); transition:all .18s ease; }
+        .nav a:hover, .button-mini:hover { background:#22d3ee; color:#020617; border-color:#22d3ee; transform:translateY(-1px); }
+        .button-small, .button-primary { display:inline-block; background:#22d3ee; color:#020617; text-decoration:none; border-radius:14px; padding:12px 18px; font-weight:800; box-shadow:0 10px 30px rgba(34,211,238,.25); }
+        .button-primary { padding:14px 24px; border-radius:16px; }
+        .review-button { display:inline-flex; align-items:center; gap:12px; padding:18px 28px; font-size:18px; font-weight:900; border-radius:18px; }
+        .google-badge { display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:999px; background:#fff; color:#2563eb; font-size:22px; font-weight:900; flex:0 0 auto; }
+        .review-stars-inline { font-size:18px; color:#fcd34d; letter-spacing:1px; }
+        .button-ghost { display:inline-block; text-decoration:none; color:#fff; border:1px solid rgba(255,255,255,.18); border-radius:16px; padding:14px 24px; background: rgba(255,255,255,.04); }
+        .hero { position: relative; overflow:hidden; border-bottom:1px solid rgba(255,255,255,.1); background: radial-gradient(circle at top right, rgba(59,130,246,.22), transparent 35%), radial-gradient(circle at bottom left, rgba(14,165,233,.16), transparent 30%), linear-gradient(to bottom, rgba(2,6,23,.08), rgba(2,6,23,.18), rgba(2,6,23,.65)); }
+        .hero-inner { padding: 72px 0 88px; }
+        .hero-grid, .reviews-grid, .cta-grid { display:grid; gap:32px; align-items:center; }
+        .hero-grid { grid-template-columns: 1.15fr .85fr; gap:40px; }
+        .reviews-grid { grid-template-columns: .9fr 1.1fr; align-items: start; }
+        .cta-grid { grid-template-columns: 1.3fr .7fr; }
+        .badge-row, .hero-buttons, .hero-links, .chips, .review-actions { display:flex; flex-wrap:wrap; gap:12px; }
+        .pill, .meta-pill, .chip { border-radius:999px; padding:10px 16px; font-size:14px; }
+        .pill { border:1px solid rgba(103,232,249,.3); background:rgba(34,211,238,.1); color:#bae6fd; }
+        .dot { width:8px; height:8px; border-radius:999px; background:#67e8f9; display:inline-block; margin-right:8px; }
+        .meta-pill, .chip { border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.04); color:#e2e8f0; }
+        .hero-title { font-size: clamp(40px, 7vw, 62px); line-height:1.02; font-weight:900; margin:0 0 20px; }
+        .hero-accent { display:block; color:#67e8f9; }
+        .hero-text, .section-text, .card p, .panel-text, .small-text, .portal-copy { color:#cbd5e1; line-height:1.7; }
+        .hero-text { font-size: clamp(17px, 2.5vw, 20px); max-width:720px; margin:0 0 28px; }
+        .hero-highlights, .grid4, .grid3, .grid2, .three-stats, .reviews-right, .portal-shell, .portal-list, .portal-form, .portal-dashboard, .portal-stat-grid, .portal-file-list, .artifact-grid { display:grid; gap:16px; }
+        .hero-highlights { grid-template-columns: repeat(2, minmax(0,1fr)); max-width:700px; margin-top:24px; }
+        .grid4 { grid-template-columns: repeat(4, minmax(0,1fr)); margin-top:28px; }
+        .grid3 { grid-template-columns: repeat(3, minmax(0,1fr)); margin-top:28px; }
+        .grid2 { grid-template-columns: repeat(2, minmax(0,1fr)); margin-top:24px; }
+        .three-stats { grid-template-columns: repeat(3, minmax(0,1fr)); }
+        .reviews-right { grid-template-columns: 1fr 240px; align-items:start; gap:24px; }
+        .portal-shell { grid-template-columns: .95fr 1.05fr; margin-top:28px; }
+        .portal-stat-grid { grid-template-columns: repeat(3, minmax(0,1fr)); gap:12px; }
+        .artifact-grid { grid-template-columns: repeat(3, minmax(0,1fr)); gap:12px; }
+        .highlight-card, .card.light, .stat-card, .portal-list-item, .portal-stat, .portal-file-row, .artifact-card, .portal-nav-card { border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.05); border-radius:20px; padding:18px; }
+        .card.dark, .panel, .qr-box, .cta-box, .portal-panel { border:1px solid rgba(255,255,255,.1); background:rgba(15,23,42,.82); border-radius:24px; padding:24px; }
+        .card h3, .section-title, .panel-title, .portal-title { margin:0; font-weight:800; }
+        .card h3 { font-size:20px; }
+        .card p { margin:12px 0 0; }
+        .section, .section-muted, .section-dark { padding:64px 0; }
+        .section-muted { border-top:1px solid rgba(255,255,255,.1); border-bottom:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.03); }
+        .section-dark { border-top:1px solid rgba(255,255,255,.1); border-bottom:1px solid rgba(255,255,255,.1); background:rgba(15,23,42,.5); }
+        .section-title-small, .panel-label, .service-list-title, .qr-label, .portal-kicker { font-size:12px; text-transform:uppercase; letter-spacing:3px; color:#67e8f9; margin:0; }
+        .section-title { font-size: clamp(28px, 4vw, 40px); margin:10px 0 18px; }
+        .panel { box-shadow: 0 20px 50px rgba(8,47,73,.45); }
+        .panel-header { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:20px; }
+        .panel-title, .portal-title { font-size: clamp(28px, 4vw, 34px); margin-top:10px; }
+        .panel-call-box { border:1px solid rgba(34,211,238,.2); background:rgba(34,211,238,.1); border-radius:16px; padding:10px 14px; text-align:right; }
+        .panel-call-label { font-size:11px; text-transform:uppercase; letter-spacing:3px; color:#bae6fd; }
+        .panel-call-num { font-size:22px; font-weight:800; margin-top:6px; }
+        .service-list-box { border:1px solid rgba(255,255,255,.1); background:rgba(2,6,23,.6); border-radius:18px; padding:18px; margin-top:16px; }
+        .service-list { display:grid; gap:12px; margin-top:14px; }
+        .service-item { border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.04); border-radius:12px; padding:12px 14px; font-size:14px; }
+        .stat-big { font-size:34px; font-weight:900; color:#67e8f9; }
+        .stat-label { margin-top:8px; font-size:12px; text-transform:uppercase; letter-spacing:2px; color:#94a3b8; }
+        .emergency { border-bottom:1px solid rgba(34,211,238,.2); background:rgba(34,211,238,.1); }
+        .emergency-inner { display:flex; justify-content:space-between; align-items:center; gap:18px; flex-wrap:wrap; padding:16px 0; }
+        .emergency-title { margin:0; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:3px; color:#67e8f9; }
+        .emergency-text { margin:6px 0 0; color:#e2e8f0; }
+        .rating-row { display:flex; align-items:center; gap:16px; margin-top:18px; }
+        .rating-big { font-size:54px; font-weight:900; }
+        .stars { font-size:28px; color:#fcd34d; }
+        .qr-box { text-align:center; }
+        .qr-image { width:100%; max-width:240px; border-radius:14px; border:1px solid rgba(255,255,255,.1); background:#fff; padding:8px; }
+        .portal-label { font-size:13px; color:#cbd5e1; font-weight:700; }
+        .portal-input { width:100%; border:1px solid rgba(255,255,255,.14); background:rgba(2,6,23,.7); color:#fff; border-radius:14px; padding:14px 16px; font-size:14px; outline:none; }
+        .portal-input::placeholder { color:#94a3b8; }
+        .portal-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:4px; }
+        .portal-note, .portal-file-meta { font-size:13px; color:#94a3b8; line-height:1.6; margin-top:4px; }
+        .portal-stat strong { display:block; font-size:22px; color:#67e8f9; }
+        .portal-file-row { display:flex; justify-content:space-between; align-items:center; gap:14px; border-radius:14px; padding:14px 16px; }
+        .portal-tag, .portal-nav-tag { border:1px solid rgba(103,232,249,.25); background:rgba(34,211,238,.08); color:#bae6fd; border-radius:999px; padding:6px 10px; font-size:12px; white-space:nowrap; display:inline-block; }
+        .portal-upload-box { border:1px dashed rgba(103,232,249,.35); background:rgba(34,211,238,.06); border-radius:18px; padding:18px; text-align:center; color:#cbd5e1; }
+        .artifact-card pre { margin:10px 0 0; white-space:pre-wrap; word-break:break-word; font-size:12px; line-height:1.55; color:#cbd5e1; }
+        .floating-call { position:fixed; right:16px; bottom:16px; z-index:60; background:#22d3ee; color:#020617; text-decoration:none; font-weight:900; border-radius:999px; padding:16px 22px; box-shadow:0 14px 30px rgba(34,211,238,.35); }
+        @media (max-width: 1024px) {
+          .hero-grid, .reviews-grid, .cta-grid, .portal-shell { grid-template-columns: 1fr; }
+          .reviews-right { grid-template-columns: 1fr; }
+          .grid4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+          .grid3 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+          .portal-stat-grid { grid-template-columns: 1fr 1fr 1fr; }
+          .artifact-grid { grid-template-columns: 1fr; }
+          .cta-buttons { align-items: stretch; }
+        }
+        @media (max-width: 768px) {
+          .container { padding: 0 16px; }
+          .button-primary, .button-ghost, .button-small, .button-mini { width: 100%; text-align: center; }
+          .hero-inner { padding: 48px 0 56px; }
+          .hero-highlights, .grid4, .grid3, .grid2, .three-stats, .portal-stat-grid { grid-template-columns: 1fr; }
+          .pill, .meta-pill, .chip, .review-actions > * { width: 100%; }
+          .review-actions { align-items: stretch; }
+          .floating-call { left:16px; right:16px; text-align:center; }
+          .nav a { font-size:16px; padding:14px 18px; }
+        }
+      `}</style>
+
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }} />
+
+      <div className="page">
+        <div className="bg">
+          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" preserveAspectRatio="none">
+            <defs>
+              <pattern id="pcbPattern" width="260" height="220" patternUnits="userSpaceOnUse">
+                <g stroke="#22d3ee" strokeWidth="1.4" fill="none" strokeLinecap="square">
+                  <path d="M10 40 H200" />
+                  <path d="M60 90 H240" />
+                  <path d="M20 150 H210" />
+                  <path d="M60 10 V200" />
+                  <path d="M120 0 V140" />
+                  <path d="M180 80 V220" />
+                  <path d="M20 40 V80 H80 V120 H140" />
+                  <path d="M120 140 H180 V180 H240" />
+                  <path d="M200 40 V80 H240" />
+                  <path d="M80 150 V190 H140" />
+                </g>
+                <g fill="#67e8f9" opacity="0.85">
+                  <circle cx="10" cy="40" r="2.5" />
+                  <circle cx="200" cy="40" r="2.5" />
+                  <circle cx="60" cy="90" r="2.5" />
+                  <circle cx="240" cy="90" r="2.5" />
+                  <circle cx="20" cy="150" r="2.5" />
+                  <circle cx="210" cy="150" r="2.5" />
+                  <circle cx="60" cy="200" r="2.5" />
+                  <circle cx="120" cy="140" r="2.5" />
+                  <circle cx="180" cy="80" r="2.5" />
+                  <circle cx="240" cy="180" r="2.5" />
+                  <circle cx="80" cy="120" r="2.5" />
+                  <circle cx="140" cy="120" r="2.5" />
+                </g>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#pcbPattern)" />
+          </svg>
+        </div>
+
+        {isPortalRoute ? (
+          <main className="page" style={{ background: "transparent" }}>
+            <section className="section-dark" style={{ minHeight: "100vh", paddingTop: 40 }}>
+              <div className="container">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap", marginBottom: 24 }}>
+                  <div className="logo-row">
+                    <img src={siteConfig.logoSrc} alt={siteConfig.businessName} className="logo" />
+                    <div>
+                      <span className="brand-name">{siteConfig.businessName}</span>
+                      <span className="sub-brand">Secure Owner Portal V2</span>
+                    </div>
+                  </div>
+                  <a href={siteConfig.domain} className="button-ghost">Back to Main Site</a>
+                </div>
+
+                <div className="portal-shell">
+                  <div className="portal-panel">
+                    <p className="portal-kicker">{siteConfig.portalPath}</p>
+                    <h1 className="portal-title">RAMeow secure portal</h1>
+                    <p className="portal-copy">This V2 portal route is reserved for owner access and future secure file management. It is designed for Cloudflare Access, Workers, and R2 integration so business files can be uploaded, organized, and retrieved from a private dashboard.</p>
+
+                    <div className="portal-list" style={{ marginTop: 22 }}>
+                      {portalCards.map((card) => (
+                        <PortalNavCard key={card.title} title={card.title} description={card.description} tag={card.tag} />
+                      ))}
+                    </div>
+
+                    <div className="portal-form">
+                      <label className="portal-label">Owner email</label>
+                      <input className="portal-input" type="email" placeholder="owner@ramscomputerrepair.net" />
+                      <label className="portal-label">Access password</label>
+                      <input className="portal-input" type="password" placeholder="Enter secure password" />
+                      <div className="portal-actions">
+                        <a href="#" className="button-primary">Sign In Preview</a>
+                        <a href="#" className="button-ghost">Cloudflare Access Ready</a>
+                      </div>
+                    </div>
+
+                    <p className="portal-note">This route is a secure front-end build target only. Real authentication, encrypted upload handling, and permission checks should be wired to a backend before live use.</p>
+                  </div>
+
+                  <div className="portal-panel">
+                    <p className="portal-kicker">Dashboard Mockup</p>
+                    <h2 className="portal-title">Owner file vault</h2>
+
+                    <div className="portal-dashboard">
+                      <div className="portal-stat-grid">
+                        <div className="portal-stat"><strong>24</strong><span className="portal-file-meta">Saved files</span></div>
+                        <div className="portal-stat"><strong>6</strong><span className="portal-file-meta">Recent uploads</span></div>
+                        <div className="portal-stat"><strong>3</strong><span className="portal-file-meta">Folders</span></div>
+                      </div>
+
+                      <div className="portal-upload-box">
+                        Future secure upload area for contracts, forms, customer backups, and private business documents.
+                      </div>
+
+                      <div className="portal-file-list">
+                        <div className="portal-file-row">
+                          <div>
+                            <strong>repair-intake-form.pdf</strong>
+                            <div className="portal-file-meta">Uploaded March 2026 • PDF document</div>
+                          </div>
+                          <span className="portal-tag">Forms</span>
+                        </div>
+                        <div className="portal-file-row">
+                          <div>
+                            <strong>managed-service-agreement.docx</strong>
+                            <div className="portal-file-meta">Uploaded March 2026 • Word document</div>
+                          </div>
+                          <span className="portal-tag">Contracts</span>
+                        </div>
+                        <div className="portal-file-row">
+                          <div>
+                            <strong>customer-backup-archive.zip</strong>
+                            <div className="portal-file-meta">Uploaded March 2026 • Compressed archive</div>
+                          </div>
+                          <span className="portal-tag">Backups</span>
+                        </div>
+                      </div>
+
+                      <div className="artifact-grid">
+                        <div className="artifact-card">
+                          <strong>robots.txt</strong>
+                          <pre>{deploymentArtifacts.robots}</pre>
+                        </div>
+                        <div className="artifact-card">
+                          <strong>sitemap.xml</strong>
+                          <pre>{deploymentArtifacts.sitemap}</pre>
+                        </div>
+                        <div className="artifact-card">
+                          <strong>Cloudflare Access + R2</strong>
+                          <pre>{deploymentArtifacts.accessNotes}</pre>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </main>
+        ) : (
+          <>
+            <header className="header">
+              <div className="container header-inner">
+                <div className="header-top">
+                  <div className="logo-row">
+                    <img src={siteConfig.logoSrc} alt={siteConfig.businessName} className="logo" />
+                    <div>
+                      <span className="brand-name">{siteConfig.businessName}</span>
+                      <span className="sub-brand">Repair Shop + Business IT Solutions</span>
+                    </div>
+                  </div>
+                  <a href={siteConfig.phoneHref} className="button-small">Call {siteConfig.phoneDisplay}</a>
+                </div>
+
+                <nav className="nav">
+                  <a href="#services">Services</a>
+                  <a href="#business">Business IT</a>
+                  <a href="#reviews">Reviews</a>
+                  <a href="#why-choose-us">Why Choose Us</a>
+                  <a href="#contact">Contact</a>
+                </nav>
+              </div>
+            </header>
+
+            <section className="hero">
+              <div className="container hero-inner">
+                <div className="hero-grid">
+                  <div>
+                    <div className="badge-row">
+                      <div className="pill"><span className="dot" />Harlingen, Texas • Serving the Rio Grande Valley</div>
+                    </div>
+
+                    <div className="badge-row">
+                      <div className="meta-pill">★★★★★ Rated 4.9–5.0</div>
+                      <div className="meta-pill">Same-Day Service Available</div>
+                      <div className="meta-pill">Free Basic Diagnostics</div>
+                    </div>
+
+                    <h1 className="hero-title">
+                      Professional Computer Repair
+                      <span className="hero-accent">&amp; Business IT Solutions</span>
+                    </h1>
+
+                    <p className="hero-text">
+                      Fast, dependable support for homes and businesses across Harlingen and the Rio Grande Valley. From virus removal and laptop repair to custom PCs, upgrades, and small business IT, {siteConfig.businessName} delivers practical solutions that keep your technology working.
+                    </p>
+
+                    <div className="hero-buttons">
+                      <a href={siteConfig.phoneHref} className="button-primary">Call {siteConfig.phoneDisplay}</a>
+                      <a href="#contact" className="button-ghost">Schedule Service</a>
+                    </div>
+
+                    <div className="hero-links">
+                      <a href="#services" className="button-mini">Services</a>
+                      <a href="#business" className="button-mini">Business IT</a>
+                      <a href="#reviews" className="button-mini">Reviews</a>
+                    </div>
+
+                    <div className="hero-highlights">
+                      {highlights.map((item) => (
+                        <div key={item} className="highlight-card">{item}</div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="panel">
+                      <div className="panel-header">
+                        <div>
+                          <p className="panel-label">Trusted Local Technology Support</p>
+                          <h2 className="panel-title">Fast help for common repair issues</h2>
+                        </div>
+                        <div className="panel-call-box">
+                          <div className="panel-call-label">Call or Text</div>
+                          <div className="panel-call-num">{siteConfig.phoneDisplay}</div>
+                        </div>
+                      </div>
+
+                      <p className="panel-text">
+                        Virus removal, broken screens, slow computers, upgrade work, and business IT support handled by an experienced local technician.
+                      </p>
+
+                      <div className="service-list-box">
+                        <p className="service-list-title">Popular Requests</p>
+                        <div className="service-list">
+                          <div className="service-item">Virus &amp; malware cleanup</div>
+                          <div className="service-item">Laptop screen replacement</div>
+                          <div className="service-item">SSD &amp; memory upgrades</div>
+                          <div className="service-item">Small business workstation support</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="three-stats" style={{ marginTop: 20 }}>
+                      <div className="stat-card">
+                        <div className="stat-big">25+</div>
+                        <div className="stat-label">Years Experience</div>
+                      </div>
+                      <div className="stat-card">
+                        <div className="stat-big">RGV</div>
+                        <div className="stat-label">Local Service Area</div>
+                      </div>
+                      <div className="stat-card">
+                        <div className="stat-big">★★★★★</div>
+                        <div className="stat-label">Trusted Reviews</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section className="emergency">
+              <div className="container emergency-inner">
+                <div>
+                  <p className="emergency-title">Emergency &amp; Same-Day Service</p>
+                  <p className="emergency-text">Some repairs may be available for same-day service depending on parts, workload, and issue type.</p>
+                </div>
+                <a href={siteConfig.phoneHref} className="button-ghost">Call Now: {siteConfig.phoneDisplay}</a>
+              </div>
+            </section>
+
+            <section id="services" className="section">
+              <div className="container">
+                <p className="section-title-small">Services</p>
+                <h2 className="section-title">Computer Repair Services</h2>
+                <div className="grid4">
+                  {residentialServices.map((service) => (
+                    <ServiceCard key={service.title} title={service.title} description={service.description} />
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section id="business" className="section-muted">
+              <div className="container">
+                <p className="section-title-small">Business IT Support</p>
+                <h2 className="section-title">Small Business IT Solutions</h2>
+                <p className="section-text">Support for office computers, networks, security, backups, and workstation deployment for local businesses that need dependable technology help.</p>
+                <div className="grid3">
+                  {businessFocusCards.map((card) => (
+                    <DarkInfoCard key={card.title} title={card.title} description={card.description} />
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section className="section-dark">
+              <div className="container">
+                <p className="section-title-small">Custom Systems &amp; Upgrades</p>
+                <h2 className="section-title">Custom PCs, Performance Builds, and Upgrades</h2>
+                <p className="section-text">Need a new custom system or want to improve the performance of an older computer? Get help with gaming PCs, business workstations, SSD upgrades, memory upgrades, and other hardware improvements.</p>
+                <div className="grid3">
+                  <DarkInfoCard title="Custom PC Builds" description="Custom desktops built for reliability, gaming, creative work, or general home and office use." />
+                  <DarkInfoCard title="Performance Upgrades" description="SSD, RAM, graphics, and component upgrades to improve speed, stability, and overall usability." />
+                  <DarkInfoCard title="Business Workstations" description="Purpose-built systems for office productivity, accounting, design, and other professional workloads." />
+                </div>
+              </div>
+            </section>
+
+            <section className="section">
+              <div className="container">
+                <p className="section-title-small">Common Computer Problems</p>
+                <h2 className="section-title">Problems We Fix Every Day</h2>
+                <p className="section-text">Many computer problems start small but quickly become frustrating. If your system is experiencing any of the issues below, professional diagnostics can often restore performance and prevent data loss.</p>
+                <div className="grid3">
+                  {commonProblems.map((problem) => (
+                    <ServiceCard key={problem.title} title={problem.title} description={problem.description} />
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section id="reviews" className="section-muted">
+              <div className="container">
+                <div className="reviews-grid">
+                  <div>
+                    <p className="section-title-small">Google Reviews</p>
+                    <h2 className="section-title">Trusted by Local Customers</h2>
+                    <div className="rating-row">
+                      <div className="rating-big">{reviewStats.rating}</div>
+                      <div>
+                        <div className="stars">★★★★★</div>
+                        <p className="small-text" style={{ marginTop: 4 }}>{reviewStats.reviewLabel}</p>
+                      </div>
+                    </div>
+                    <p className="section-text" style={{ marginTop: 20 }}>
+                      Read what local customers are saying about {siteConfig.businessName} and see why many clients trust the business for computer repairs, upgrades, and IT support.
+                    </p>
+                    <div className="review-actions">
+                      <a href="https://www.google.com/search?q=RAM%27S+COMPUTER+REPAIR+Harlingen+TX" target="_blank" rel="noreferrer" className="button-primary review-button" aria-label="Read Google reviews for RAM'S COMPUTER REPAIR">
+                        <span className="google-badge">G</span>
+                        <span>Read Google Reviews</span>
+                        <span className="review-stars-inline">★★★★★</span>
+                      </a>
+                      <div className="meta-pill">Rated highly by RGV customers</div>
+                    </div>
+                  </div>
+
+                  <div className="reviews-right">
+                    <div className="grid2" style={{ marginTop: 0 }}>
+                      <DarkInfoCard title="Professional Service" description="Customers value clear communication, honest recommendations, and practical solutions for both home and business systems." />
+                      <DarkInfoCard title="Reliable Repairs" description="From malware cleanup to hardware upgrades, many clients return for dependable repair work and trusted advice." />
+                      <DarkInfoCard title="Local Reputation" description="Serving Harlingen and the surrounding RGV with personalized support instead of one-size-fits-all service." />
+                      <DarkInfoCard title="Business-Friendly Support" description="Small business clients benefit from responsive assistance, workstation support, and ongoing technology help." />
+                    </div>
+                    <div className="qr-box">
+                      <div className="qr-label">Scan Reviews</div>
+                      <img src={siteConfig.reviewQrSrc} alt="Google review QR code" className="qr-image" />
+                      <p className="small-text" style={{ marginTop: 12 }}>Click the button above to read current Google reviews.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section id="why-choose-us" className="section">
+              <div className="container">
+                <p className="section-title-small">Why Choose RAM'S COMPUTER REPAIR</p>
+                <h2 className="section-title">Local Service You Can Count On</h2>
+                <p className="section-text">Clear communication, practical repair recommendations, and dependable support for both home users and small businesses across the Rio Grande Valley.</p>
+                <div className="grid4">
+                  {trustReasons.map((reason) => (
+                    <DarkInfoCard key={reason.title} title={reason.title} description={reason.description} />
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section id="service-area" className="section-dark">
+              <div className="container">
+                <p className="section-title-small">Service Area</p>
+                <h2 className="section-title">Serving Harlingen and the Rio Grande Valley</h2>
+                <p className="section-text">Computer repair and small business IT support for customers in Harlingen and surrounding RGV communities.</p>
+
+                <div style={{marginTop:28,borderRadius:18,overflow:"hidden",border:"1px solid rgba(255,255,255,.1)"}}>
+                  <iframe
+                    title="Harlingen Texas Service Area Map"
+                    src="https://www.google.com/maps?q=Harlingen%20Texas&output=embed"
+                    width="100%"
+                    height="380"
+                    style={{border:0}}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                </div>
+
+                <div className="chips" style={{ marginTop: 22 }}>
+                  {serviceAreas.map((area) => (
+                    <span key={area} className="chip">{area}</span>
+                  ))}
+                </div>
+              </div>
+            </section>
+          </>
+        )}
+
+        <section id="contact" className="section" style={{ paddingBottom: 80 }}>
+          <div className="container">
+            <div className="cta-box">
+              <div className="cta-grid">
+                <div>
+                  <p className="section-title-small">Schedule Service</p>
+                  <h2 className="section-title">Need help with your computer or business IT?</h2>
+                  <p className="section-text">Call or text today for appointment availability and free basic diagnostics.</p>
+                </div>
+                <div className="cta-buttons">
+                  <a href={siteConfig.phoneHref} className="button-ghost">{siteConfig.phoneDisplay}</a>
+                  <a href={`mailto:${siteConfig.email}`} className="button-ghost">Call or Email for Appointment</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <a href={siteConfig.phoneHref} className="floating-call">Call Now</a>
+      </div>
+    </>
+  );
+}
