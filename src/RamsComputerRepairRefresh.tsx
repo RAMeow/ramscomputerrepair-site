@@ -454,24 +454,52 @@ Sitemap: https://www.ramscomputerrepair.net/sitemap.xml`,
           </p>
 
           <div style={{ marginTop: 24 }}>
-            <form>
-              <input
-                type="file"
-                style={{
-                  display: "block",
-                  marginBottom: 12,
-                  padding: 14,
-                  borderRadius: 12,
-                  border: "1px solid rgba(255,255,255,.15)",
-                  background: "#0f172a",
-                  color: "white",
-                  width: "100%"
-                }}
-              />
-              <button type="button" className="button-primary">
-                Upload File
-              </button>
-            </form>
+            <form
+  onSubmit={async (e) => {
+    e.preventDefault();
+
+    const form = e.currentTarget;
+    const input = form.querySelector('input[type="file"]') as HTMLInputElement;
+
+    if (!input.files?.length) {
+      alert("Please choose a file first.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", input.files[0]);
+
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!res.ok) {
+      alert("Upload failed.");
+      return;
+    }
+
+    alert("Upload successful.");
+    input.value = "";
+  }}
+>
+  <input
+    type="file"
+    style={{
+      display: "block",
+      marginBottom: 12,
+      padding: 14,
+      borderRadius: 12,
+      border: "1px solid rgba(255,255,255,.15)",
+      background: "#0f172a",
+      color: "white",
+      width: "100%"
+    }}
+  />
+  <button type="submit" className="button-primary">
+    Upload File
+  </button>
+</form>
           </div>
 
           <div style={{ marginTop: 32 }}>
