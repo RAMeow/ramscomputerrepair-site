@@ -547,7 +547,6 @@ export default function RamsComputerRepairRefresh() {
     uploadSelectedFile={uploadSelectedFile}
     deleteFile={deleteFile}
   />
-) : (
         ) : (
           <>
             <header className="header">
