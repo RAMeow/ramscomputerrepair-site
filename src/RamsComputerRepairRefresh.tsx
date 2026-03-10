@@ -32,7 +32,7 @@ const siteConfig = {
   email: "Ram@RamsComputerRepair.Net",
   domain: "https://www.ramscomputerrepair.net",
   logoSrc: logo,
-  reviewQrSrc: reviewQr
+  reviewQrSrc: reviewQr,
   socialTitle: "RAM'S COMPUTER REPAIR | Computer Repair & Business IT Solutions",
   socialDescription:
     "Professional computer repair, virus removal, upgrades, laptop repair, custom PCs, and small business IT support in Harlingen and the Rio Grande Valley.",
