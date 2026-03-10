@@ -833,35 +833,27 @@ export default function RamsComputerRepairRefresh() {
 </div>
 
                       {filteredFiles.length === 0 ? (
-                        <p style={{ color: "#cbd5e1" }}>
-                          {searchTerm ? "No matching files found." : "No files uploaded yet."}
-                        </p>
-                      ) : (
-                        <div style={{ display: "grid", gap: 12 }}>
-                          {filteredFiles.map((file) => (
-                            <div
-                              key={file.key}
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                gap: 12,
-                                padding: 14,
-                                borderRadius: 12,
-                                border: "1px solid rgba(255,255,255,.1)",
-                                background: "rgba(255,255,255,.04)",
-                              }}
-                            >
-                              <div style={{ minWidth: 0 }}>
-                                <a
-                                  href={`/api/download/${encodeURIComponent(file.key)}`}
-                                  style={{
-                                    color: "#67e8f9",
-                                    textDecoration: "none",
-                                    fontWeight: 600,
-                                    wordBreak: "break-word",
-                                  }}
-                                >
+  <p style={{ color: "#cbd5e1" }}>
+    {searchTerm ? "No matching files found." : "No files uploaded yet."}
+  </p>
+) : (
+  <div style={{ display: "grid", gap: 12 }}>
+    {filteredFiles.map((file) => (
+      ...
+    ))}
+  </div>
+)}
+
+{selectedPreview && (
+  <div
+    style={{
+      marginTop: 24,
+      padding: 20,
+      borderRadius: 16,
+      border: "1px solid rgba(255,255,255,.1)",
+      background: "rgba(255,255,255,.04)",
+    }}
+  >
                                   {file.key}
                                 </a>
                                 <div style={{ color: "#94a3b8", fontSize: 12, marginTop: 6 }}>
