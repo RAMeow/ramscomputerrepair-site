@@ -658,34 +658,179 @@ export default function RamsComputerRepairRefresh() {
                       )}
                     </div>
 
-                    <div style={{ marginTop: 32 }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          gap: 12,
-                          flexWrap: "wrap",
-                          marginBottom: 12,
-                        }}
-                      >
-                        <h2 style={{ margin: 0 }}>Files</h2>
+                   <div style={{ marginTop: 32 }}>
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      gap: 12,
+      flexWrap: "wrap",
+      marginBottom: 12,
+    }}
+  >
+    <h2 style={{ margin: 0 }}>Files</h2>
 
-                        <input
-                          type="text"
-                          placeholder="Search files..."
-                          value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                          style={{
-                            minWidth: 260,
-                            padding: 12,
-                            borderRadius: 12,
-                            border: "1px solid rgba(255,255,255,.15)",
-                            background: "#0f172a",
-                            color: "white",
-                          }}
-                        />
-                      </div>
+    <input
+      type="text"
+      placeholder="Search files..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      style={{
+        minWidth: 260,
+        padding: 12,
+        borderRadius: 12,
+        border: "1px solid rgba(255,255,255,.15)",
+        background: "#0f172a",
+        color: "white",
+      }}
+    />
+  </div>
+
+  {filteredFiles.length === 0 ? (
+    <p style={{ color: "#cbd5e1" }}>
+      {searchTerm ? "No matching files found." : "No files uploaded yet."}
+    </p>
+  ) : (
+    <div style={{ display: "grid", gap: 12 }}>
+      {filteredFiles.map((file) => (
+        <div
+          key={file.key}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 12,
+            padding: 14,
+            borderRadius: 12,
+            border: "1px solid rgba(255,255,255,.1)",
+            background: "rgba(255,255,255,.04)",
+          }}
+        >
+          <div style={{ minWidth: 0 }}>
+            <a
+              href={`/api/download/${encodeURIComponent(file.key)}`}
+              style={{
+                color: "#67e8f9",
+                textDecoration: "none",
+                fontWeight: 600,
+                wordBreak: "break-word",
+              }}
+            >
+              {file.key}
+            </a>
+
+            <div style={{ color: "#94a3b8", fontSize: 12, marginTop: 6 }}>
+              {file.size > 1048576
+                ? `${(file.size / 1048576).toFixed(2)} MB`
+                : `${(file.size / 1024).toFixed(1)} KB`}{" "}
+              • {new Date(file.uploaded).toLocaleString()}
+            </div>
+          </div>
+
+          <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+            {(inferPreviewType(file.key) === "image" ||
+              inferPreviewType(file.key) === "pdf") && (
+              <button
+                type="button"
+                onClick={() => setSelectedPreview(file.key)}
+                style={{
+                  border: 0,
+                  background: "#334155",
+                  color: "white",
+                  padding: "10px 14px",
+                  borderRadius: 10,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                }}
+              >
+                Preview
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={() => deleteFile(file.key)}
+              style={{
+                border: 0,
+                background: "#ef4444",
+                color: "white",
+                padding: "10px 14px",
+                borderRadius: 10,
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
+
+  {selectedPreview && (
+    <div
+      style={{
+        marginTop: 24,
+        padding: 20,
+        borderRadius: 16,
+        border: "1px solid rgba(255,255,255,.1)",
+        background: "rgba(255,255,255,.04)",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 12,
+          marginBottom: 16,
+        }}
+      >
+        <h3 style={{ margin: 0 }}>Preview</h3>
+
+        <button
+          type="button"
+          onClick={() => setSelectedPreview(null)}
+          style={{
+            border: 0,
+            background: "#334155",
+            color: "white",
+            padding: "10px 14px",
+            borderRadius: 10,
+            fontWeight: 700,
+            cursor: "pointer",
+          }}
+        >
+          Close
+        </button>
+      </div>
+
+      {inferPreviewType(selectedPreview) === "image" && (
+        <img
+          src={`/api/download/${encodeURIComponent(selectedPreview)}`}
+          alt={selectedPreview}
+          style={{ maxWidth: "100%", borderRadius: 12 }}
+        />
+      )}
+
+      {inferPreviewType(selectedPreview) === "pdf" && (
+        <iframe
+          src={`/api/download/${encodeURIComponent(selectedPreview)}`}
+          title={selectedPreview}
+          style={{
+            width: "100%",
+            height: 600,
+            border: "1px solid rgba(255,255,255,.1)",
+            borderRadius: 12,
+            background: "white",
+          }}
+        />
+      )}
+    </div>
+  )}
+</div>
 
                       {filteredFiles.length === 0 ? (
                         <p style={{ color: "#cbd5e1" }}>
