@@ -1155,4 +1155,5 @@ export default function RamsComputerRepairRefresh() {
         <a href={siteConfig.phoneHref} className="floating-call">Call Now</a>
       </div>
     </>
-  );
+);
+}
