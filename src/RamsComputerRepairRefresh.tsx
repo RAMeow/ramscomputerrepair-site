@@ -907,7 +907,7 @@ export default function RamsComputerRepairRefresh() {
                                 </button>
                               </div>
                             </div>
-                          ))
+                          ))}
                         </div>
 
                     {selectedPreview && (
