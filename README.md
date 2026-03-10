@@ -1,18 +1,13 @@
+# RAM'S COMPUTER REPAIR - Production Deploy
 
-RAM'S COMPUTER REPAIR WEBSITE
+## Run locally
+npm install
+npm run dev
 
-Deployment target:
-GitHub → Cloudflare Pages
+## Build
+npm run build
 
-Important routes:
-/                Main website
-/RAMeow          Secure portal entry point
-
-Setup Steps:
-1. Upload contents to GitHub repo
-2. Connect repo to Cloudflare Pages
-3. Build preset: None
-4. Output directory: /
-
-Security Upgrade:
-Use Cloudflare Zero Trust → Access to protect /RAMeow
+## Cloudflare Pages
+Framework preset: Vite
+Build command: npm run build
+Build output directory: dist
