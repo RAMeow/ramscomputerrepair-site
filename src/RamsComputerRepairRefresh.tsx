@@ -309,9 +309,14 @@ async function deleteFile(key: string) {
 
   await loadFiles();
 }
+
+useEffect(() => {
+  if (isPortalRoute) {
+    loadFiles();
+  }
 }, [isPortalRoute]);
-  
-  return (
+
+return (
     <>
       <style>{`
         * { box-sizing: border-box; }
