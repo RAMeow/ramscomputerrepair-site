@@ -221,7 +221,7 @@ function PortalNavCard({ title, description, tag }: { title: string; description
 
 export default function RamsComputerRepairRefresh() {
   const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
-  const isPortalRoute = currentPath.toLowerCase().startsWith(siteConfig.portalPath.toLowerCase());  
+  const isPortalRoute = currentPath.toLowerCase().startsWith(siteConfig.portalPath.toLowerCase()); 
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "ComputerRepair",
