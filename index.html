@@ -31,7 +31,7 @@
   />
   <meta name="twitter:image" content="/social-preview-rams.png" />
 
-  <!-- Local Business Schema -->
+  <!-- Local Business + Services Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -59,7 +59,53 @@
     ],
     "sameAs": [
       "https://facebook.com/Rams.Computer.Repair"
-    ]
+    ],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Computer Repair Services",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Virus Removal",
+            "areaServed": "Harlingen TX"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Laptop Repair",
+            "areaServed": "Harlingen TX"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Data Recovery",
+            "areaServed": "Rio Grande Valley"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Custom Gaming PC Builds",
+            "areaServed": "Rio Grande Valley"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Small Business IT Support",
+            "areaServed": "Harlingen TX"
+          }
+        }
+      ]
+    }
   }
   </script>
 
