@@ -7,11 +7,12 @@ export const onRequestPost: PagesFunction<{
   if (!(file instanceof File)) {
     return new Response(JSON.stringify({ error: "No file uploaded" }), {
       status: 400,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
   }
 
-  // Basic filename cleanup
   const safeName = file.name.replace(/[^\w.\- ]+/g, "_");
   const key = `${Date.now()}-${safeName}`;
 
@@ -22,6 +23,8 @@ export const onRequestPost: PagesFunction<{
   });
 
   return new Response(JSON.stringify({ ok: true, key }), {
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 };
