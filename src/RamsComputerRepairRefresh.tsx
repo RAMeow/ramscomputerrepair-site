@@ -551,6 +551,7 @@ export default function RamsComputerRepairRefresh() {
                 <div className="portal-shell">
                   <div className="portal-panel">
                     <p className="portal-kicker">/RAMeow</p>
+                    <meta name="robots" content="noindex,nofollow" />
                     <h1 className="portal-title">Owner Portal</h1>
                     <p className="portal-copy">
                       This is the live RAMeow portal area. RAM&apos;S EYES ONLY! KEEP OUT!
