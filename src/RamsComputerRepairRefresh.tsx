@@ -1,5 +1,6 @@
 import logo from "../assets/logo.png";
 import reviewQr from "../assets/review-qr.png";
+import React, { useEffect, useState } from "react";
 
 type Brand = {
   name: string;
@@ -279,7 +280,22 @@ Sitemap: https://www.ramscomputerrepair.net/sitemap.xml`,
 3. Route uploads through a Worker bound to an R2 bucket
 4. Keep the public homepage outside Access protection`,
   };
+const [files, setFiles] = useState<{ key: string; size: number; uploaded: string }[]>([]);
 
+async function loadFiles() {
+  const res = await fetch("/api/files");
+  if (!res.ok) return;
+
+  const data = await res.json();
+  setFiles(data.files || []);
+}
+
+useEffect(() => {
+  if (isPortalRoute) {
+    loadFiles();
+  }
+}, [isPortalRoute]);
+  
   return (
     <>
       <style>{`
@@ -431,6 +447,7 @@ Sitemap: https://www.ramscomputerrepair.net/sitemap.xml`,
         </div>
 
         {isPortalRoute ? (
+      
   <main className="page" style={{ background: "transparent" }}>
     <section className="section-dark" style={{ minHeight: "100vh", paddingTop: 40 }}>
       <div className="container">
@@ -475,12 +492,14 @@ Sitemap: https://www.ramscomputerrepair.net/sitemap.xml`,
     });
 
     if (!res.ok) {
-      alert("Upload failed.");
-      return;
-    }
+  alert("Upload failed.");
+  return;
+}
 
-    alert("Upload successful.");
-    input.value = "";
+alert("Upload successful.");
+input.value = "";
+await loadFiles();
+    
   }}
 >
   <input
@@ -503,13 +522,25 @@ Sitemap: https://www.ramscomputerrepair.net/sitemap.xml`,
           </div>
 
           <div style={{ marginTop: 32 }}>
-            <h2 style={{ marginBottom: 12 }}>Files</h2>
-            <ul style={{ lineHeight: 1.9 }}>
-              <li>repair-intake-form.pdf</li>
-              <li>managed-service-agreement.docx</li>
-              <li>customer-backup-archive.zip</li>
-            </ul>
-          </div>
+  <h2 style={{ marginBottom: 12 }}>Files</h2>
+
+  {files.length === 0 ? (
+    <p style={{ color: "#cbd5e1" }}>No files uploaded yet.</p>
+  ) : (
+    <ul style={{ lineHeight: 1.9 }}>
+      {files.map((file) => (
+        <li key={file.key}>
+          <a
+            href={`/api/download/${encodeURIComponent(file.key)}`}
+            style={{ color: "#67e8f9" }}
+          >
+            {file.key}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
         </div>
       </div>
     </section>
