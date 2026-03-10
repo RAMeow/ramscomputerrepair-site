@@ -541,7 +541,7 @@ await loadFiles();
 </form>
           </div>
 
-          <div style={{ marginTop: 32 }}>
+         <div style={{ marginTop: 32 }}>
   <h2 style={{ marginBottom: 12 }}>Files</h2>
 
   {files.length === 0 ? (
@@ -562,12 +562,17 @@ await loadFiles();
             background: "rgba(255,255,255,.04)"
           }}
         >
-          <a
-            href={`/api/download/${encodeURIComponent(file.key)}`}
-            style={{ color: "#67e8f9", textDecoration: "none", fontWeight: 600 }}
-          >
-            {file.key}
-          </a>
+          <div style={{ minWidth: 0 }}>
+            <a
+              href={`/api/download/${encodeURIComponent(file.key)}`}
+              style={{ color: "#67e8f9", textDecoration: "none", fontWeight: 600, wordBreak: "break-word" }}
+            >
+              {file.key}
+            </a>
+            <div style={{ color: "#94a3b8", fontSize: 12, marginTop: 6 }}>
+              {Math.round(file.size / 1024)} KB • {new Date(file.uploaded).toLocaleString()}
+            </div>
+          </div>
 
           <button
             type="button"
@@ -579,7 +584,8 @@ await loadFiles();
               padding: "10px 14px",
               borderRadius: 10,
               fontWeight: 700,
-              cursor: "pointer"
+              cursor: "pointer",
+              flexShrink: 0
             }}
           >
             Delete
