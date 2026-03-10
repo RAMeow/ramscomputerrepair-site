@@ -290,10 +290,25 @@ async function loadFiles() {
   setFiles(data.files || []);
 }
 
-useEffect(() => {
-  if (isPortalRoute) {
-    loadFiles();
+async function deleteFile(key: string) {
+  const confirmed = window.confirm(`Delete "${key}"?`);
+  if (!confirmed) return;
+
+  const res = await fetch("/api/delete", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ key }),
+  });
+
+  if (!res.ok) {
+    alert("Delete failed.");
+    return;
   }
+
+  await loadFiles();
+}
 }, [isPortalRoute]);
   
   return (
@@ -527,18 +542,46 @@ await loadFiles();
   {files.length === 0 ? (
     <p style={{ color: "#cbd5e1" }}>No files uploaded yet.</p>
   ) : (
-    <ul style={{ lineHeight: 1.9 }}>
+    <div style={{ display: "grid", gap: 12 }}>
       {files.map((file) => (
-        <li key={file.key}>
+        <div
+          key={file.key}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 12,
+            padding: 14,
+            borderRadius: 12,
+            border: "1px solid rgba(255,255,255,.1)",
+            background: "rgba(255,255,255,.04)"
+          }}
+        >
           <a
             href={`/api/download/${encodeURIComponent(file.key)}`}
-            style={{ color: "#67e8f9" }}
+            style={{ color: "#67e8f9", textDecoration: "none", fontWeight: 600 }}
           >
             {file.key}
           </a>
-        </li>
+
+          <button
+            type="button"
+            onClick={() => deleteFile(file.key)}
+            style={{
+              border: 0,
+              background: "#ef4444",
+              color: "white",
+              padding: "10px 14px",
+              borderRadius: 10,
+              fontWeight: 700,
+              cursor: "pointer"
+            }}
+          >
+            Delete
+          </button>
+        </div>
       ))}
-    </ul>
+    </div>
   )}
 </div>
         </div>
