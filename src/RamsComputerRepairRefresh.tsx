@@ -486,8 +486,7 @@ return (
           <p className="portal-kicker">/RAMeow</p>
           <h1 className="portal-title">Owner Portal</h1>
           <p className="portal-copy">
-            This is the live RAMeow portal area. Next step is connecting file upload,
-            file listing, and downloads using Cloudflare Pages Functions and R2.
+            This is the live RAMeow portal area. RAM'S EYES ONLY! KEEP OUT!
           </p>
 
           <div style={{ marginTop: 24 }}>
