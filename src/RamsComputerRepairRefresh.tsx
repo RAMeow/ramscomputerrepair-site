@@ -1130,4 +1130,3 @@ export default function RamsComputerRepairRefresh() {
       </div>
     </>
   );
-}
