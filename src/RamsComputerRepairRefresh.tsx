@@ -1,3 +1,6 @@
+import logo from "../assets/logo.png";
+import reviewQr from "../assets/review-qr.png";
+
 type Brand = {
   name: string;
   src: string;
@@ -21,17 +24,15 @@ type SiteConfig = {
   portalPath: string;
 };
 
-const embeddedLogoSrc = "/assets/logo.png";
-const embeddedReviewQrSrc = "/assets/review-qr.png";
-
-const siteConfig: SiteConfig = {
+const siteConfig = {
   businessName: "RAM'S COMPUTER REPAIR",
   phoneDisplay: "956-244-5094",
   phoneHref: "tel:9562445094",
+  location: "Harlingen, Texas",
   email: "Ram@RamsComputerRepair.Net",
   domain: "https://www.ramscomputerrepair.net",
-  logoSrc: embeddedLogoSrc,
-  reviewQrSrc: embeddedReviewQrSrc,
+  logoSrc: logo,
+  reviewQrSrc: reviewQr
   socialTitle: "RAM'S COMPUTER REPAIR | Computer Repair & Business IT Solutions",
   socialDescription:
     "Professional computer repair, virus removal, upgrades, laptop repair, custom PCs, and small business IT support in Harlingen and the Rio Grande Valley.",
