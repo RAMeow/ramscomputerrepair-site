@@ -687,67 +687,87 @@ export default function RamsComputerRepairRefresh() {
     />
   </div>
 
-  {filteredFiles.length === 0 ? (
-    <p style={{ color: "#cbd5e1" }}>
-      {searchTerm ? "No matching files found." : "No files uploaded yet."}
-    </p>
-  ) : (
-    <div style={{ display: "grid", gap: 12 }}>
-      {filteredFiles.map((file) => (
-        <div
-          key={file.key}
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 12,
-            padding: 14,
-            borderRadius: 12,
-            border: "1px solid rgba(255,255,255,.1)",
-            background: "rgba(255,255,255,.04)",
-          }}
-        >
-          <div style={{ minWidth: 0 }}>
-            <a
-              href={`/api/download/${encodeURIComponent(file.key)}`}
+ {filteredFiles.length === 0 ? (
+  <p style={{ color: "#cbd5e1" }}>
+    {searchTerm ? "No matching files found." : "No files uploaded yet."}
+  </p>
+) : (
+  <div style={{ display: "grid", gap: 12 }}>
+    {filteredFiles.map((file) => (
+      <div
+        key={file.key}
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 12,
+          padding: 14,
+          borderRadius: 12,
+          border: "1px solid rgba(255,255,255,.1)",
+          background: "rgba(255,255,255,.04)",
+        }}
+      >
+        <div style={{ minWidth: 0 }}>
+          <a
+            href={`/api/download/${encodeURIComponent(file.key)}`}
+            style={{
+              color: "#67e8f9",
+              textDecoration: "none",
+              fontWeight: 600,
+              wordBreak: "break-word",
+            }}
+          >
+            {file.key}
+          </a>
+
+          <div style={{ color: "#94a3b8", fontSize: 12, marginTop: 6 }}>
+            {file.size > 1048576
+              ? `${(file.size / 1048576).toFixed(2)} MB`
+              : `${(file.size / 1024).toFixed(1)} KB`}{" "}
+            • {new Date(file.uploaded).toLocaleString()}
+          </div>
+        </div>
+
+        <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+          {(inferPreviewType(file.key) === "image" ||
+            inferPreviewType(file.key) === "pdf") && (
+            <button
+              type="button"
+              onClick={() => setSelectedPreview(file.key)}
               style={{
-                color: "#67e8f9",
-                textDecoration: "none",
-                fontWeight: 600,
-                wordBreak: "break-word",
+                border: 0,
+                background: "#334155",
+                color: "white",
+                padding: "10px 14px",
+                borderRadius: 10,
+                fontWeight: 700,
+                cursor: "pointer",
               }}
             >
-              {file.key}
-            </a>
+              Preview
+            </button>
+          )}
 
-            <div style={{ color: "#94a3b8", fontSize: 12, marginTop: 6 }}>
-              {file.size > 1048576
-                ? `${(file.size / 1048576).toFixed(2)} MB`
-                : `${(file.size / 1024).toFixed(1)} KB`}{" "}
-              • {new Date(file.uploaded).toLocaleString()}
-            </div>
-          </div>
-
-          <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
-            {(inferPreviewType(file.key) === "image" ||
-              inferPreviewType(file.key) === "pdf") && (
-              <button
-                type="button"
-                onClick={() => setSelectedPreview(file.key)}
-                style={{
-                  border: 0,
-                  background: "#334155",
-                  color: "white",
-                  padding: "10px 14px",
-                  borderRadius: 10,
-                  fontWeight: 700,
-                  cursor: "pointer",
-                }}
-              >
-                Preview
-              </button>
-            )}
-
+          <button
+            type="button"
+            onClick={() => deleteFile(file.key)}
+            style={{
+              border: 0,
+              background: "#ef4444",
+              color: "white",
+              padding: "10px 14px",
+              borderRadius: 10,
+              fontWeight: 700,
+              cursor: "pointer",
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
             <button
               type="button"
               onClick={() => deleteFile(file.key)}
