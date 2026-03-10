@@ -268,30 +268,6 @@ export default function RamsComputerRepairRefresh() {
     },
   ];
 
-  const deploymentArtifacts = {
-    robots: `User-agent: *
-Allow: /
-Sitemap: https://www.ramscomputerrepair.net/sitemap.xml`,
-    sitemap: `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://www.ramscomputerrepair.net/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://www.ramscomputerrepair.net${siteConfig.portalPath}</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.2</priority>
-  </url>
-</urlset>`,
-    accessNotes: `Cloudflare Access plan:
-1. Create a Zero Trust application for ${siteConfig.domain}${siteConfig.portalPath}
-2. Add an allow policy for your email identity
-3. Route uploads through a Worker bound to an R2 bucket
-4. Keep the public homepage outside Access protection`,
-  };
-
   const [files, setFiles] = useState<PortalFile[]>([]);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -872,25 +848,6 @@ Sitemap: https://www.ramscomputerrepair.net/sitemap.xml`,
                           <span className="portal-file-meta">Preview open</span>
                         </div>
                       </div>
-
-                      <div className="artifact-grid">
-                        <div className="artifact-card">
-                          <strong>robots.txt</strong>
-                          <pre>{deploymentArtifacts.robots}</pre>
-                        </div>
-                        <div className="artifact-card">
-                          <strong>sitemap.xml</strong>
-                          <pre>{deploymentArtifacts.sitemap}</pre>
-                        </div>
-                        <div className="artifact-card">
-                          <strong>Cloudflare Access + R2</strong>
-                          <pre>{deploymentArtifacts.accessNotes}</pre>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </section>
           </main>
         ) : (
