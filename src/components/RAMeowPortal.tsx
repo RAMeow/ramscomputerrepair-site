@@ -414,20 +414,30 @@ export default function RAMeowPortal({
                 </div>
 
                 <div
-                  style={{
-                    marginTop: 20,
-                    padding: 18,
-                    borderRadius: 16,
-                    border: "1px solid rgba(255,255,255,.1)",
-                    background: "rgba(255,255,255,.04)",
-                  }}
-                >
-                  <h3 style={{ marginTop: 0, marginBottom: 10 }}>Portal Notes</h3>
-                  <p className="portal-note">
-                    Use this area to manage uploads, review files, preview images or PDFs,
-                    and delete outdated items from your private RAMeow vault.
-                  </p>
-                </div>
+  style={{
+    marginTop: 20,
+    padding: 18,
+    borderRadius: 16,
+    border: "1px solid rgba(255,255,255,.1)",
+    background: "rgba(255,255,255,.04)",
+  }}
+>
+  <h3 style={{ marginTop: 0, marginBottom: 10 }}>Vault Summary</h3>
+  <div style={{ display: "grid", gap: 10 }}>
+    <div className="portal-note">
+      Total files stored: <strong style={{ color: "#fff" }}>{files.length}</strong>
+    </div>
+    <div className="portal-note">
+      Files matching search: <strong style={{ color: "#fff" }}>{filteredFiles.length}</strong>
+    </div>
+    <div className="portal-note">
+      Preview status: <strong style={{ color: "#fff" }}>{selectedPreview ? "Open" : "Closed"}</strong>
+    </div>
+    <div className="portal-note">
+      Upload status: <strong style={{ color: "#fff" }}>{uploading ? `Uploading ${uploadProgress}%` : "Idle"}</strong>
+    </div>
+  </div>
+</div>
               </div>
             </div>
           </div>
