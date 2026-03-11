@@ -18,7 +18,7 @@ export function useRAMeowFiles(isPortalRoute: boolean) {
 
   async function loadFiles() {
     try {
-      const res = await fetch("/api/files");
+      const res = await fetch("/api/list");
       const data = await res.json();
       setFiles(data.files || []);
     } catch (err) {
@@ -28,46 +28,10 @@ export function useRAMeowFiles(isPortalRoute: boolean) {
 
   async function deleteFile(key: string) {
     if (!confirm(`Delete ${key}?`)) return;
-async function renameFile(oldKey: string) {
-  const currentName = oldKey.split("/").pop() || oldKey;
-  const newName = window.prompt("Enter new file name:", currentName);
 
-  if (!newName || newName.trim() === "" || newName === currentName) return;
-
-  const prefix = oldKey.includes("/") ? oldKey.slice(0, oldKey.lastIndexOf("/") + 1) : "";
-  const safeNewName = newName.replace(/[^\w.\- ]+/g, "_");
-  const newKey = `${prefix}${safeNewName}`;
-
-  try {
-    const res = await fetch("/api/rename", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ oldKey, newKey }),
-    });
-
-    if (!res.ok) {
-      throw new Error("Rename failed");
-    }
-
-    if (selectedPreview === oldKey) {
-      setSelectedPreview(newKey);
-    }
-
-    await loadFiles();
-  } catch (err) {
-    console.error("Rename failed", err);
-    alert("Rename failed.");
-  }
-}
     try {
-      await fetch("/api/delete", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ key }),
+      await fetch(`/api/delete/${encodeURIComponent(key)}`, {
+        method: "DELETE",
       });
 
       await loadFiles();
@@ -79,18 +43,11 @@ async function renameFile(oldKey: string) {
   function inferPreviewType(key: string) {
     const lower = key.toLowerCase();
 
-    if (
-      lower.endsWith(".png") ||
-      lower.endsWith(".jpg") ||
-      lower.endsWith(".jpeg") ||
-      lower.endsWith(".webp")
-    ) {
+    if (lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".webp"))
       return "image";
-    }
 
-    if (lower.endsWith(".pdf")) {
+    if (lower.endsWith(".pdf"))
       return "pdf";
-    }
 
     return "other";
   }
@@ -140,7 +97,7 @@ async function renameFile(oldKey: string) {
     }
   }, [isPortalRoute]);
 
-    return {
+  return {
     files,
     uploading,
     uploadProgress,
@@ -149,12 +106,13 @@ async function renameFile(oldKey: string) {
     searchTerm,
     fileInputRef,
     filteredFiles,
+
     setDragActive,
     setSelectedPreview,
     setSearchTerm,
+
     uploadSelectedFile,
     deleteFile,
-    renameFile,
     inferPreviewType,
   };
 }
