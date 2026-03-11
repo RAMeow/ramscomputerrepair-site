@@ -32,6 +32,7 @@ type RAMeowPortalProps = {
   inferPreviewType: (key: string) => "image" | "pdf" | "other";
   uploadSelectedFile: (file: File) => Promise<void>;
   deleteFile: (key: string) => Promise<void>;
+  renameFile: (key: string) => Promise<void>;
 };
 
 function PortalNavCard({
@@ -69,6 +70,7 @@ export default function RAMeowPortal({
   inferPreviewType,
   uploadSelectedFile,
   deleteFile,
+  renameFile,
 }: RAMeowPortalProps) {
   return (
     <main className="page" style={{ background: "transparent" }}>
