@@ -1,6 +1,6 @@
 import logo from "../assets/logo.png";
 import reviewQr from "../assets/review-qr.png";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React from "react";
 import RAMeowPortal from "./components/RAMeowPortal";
 import PublicSite from "./components/PublicSite";
 import { useRAMeowFiles } from "./components/useRAMeowFiles";
@@ -22,12 +22,6 @@ type SiteConfig = {
   socialTitle: string;
   socialDescription: string;
   portalPath: string;
-};
-
-type PortalFile = {
-  key: string;
-  size: number;
-  uploaded: string;
 };
 
 const siteConfig: SiteConfig = {
@@ -197,42 +191,6 @@ const highlights: string[] = [
   "Residential & Business Support",
 ];
 
-function ServiceCard({ title, description }: InfoCard) {
-  return (
-    <div className="card light">
-      <h3>{title}</h3>
-      <p>{description}</p>
-    </div>
-  );
-}
-
-function DarkInfoCard({ title, description }: InfoCard) {
-  return (
-    <div className="card dark">
-      <h3>{title}</h3>
-      <p>{description}</p>
-    </div>
-  );
-}
-
-function PortalNavCard({
-  title,
-  description,
-  tag,
-}: {
-  title: string;
-  description: string;
-  tag: string;
-}) {
-  return (
-    <div className="portal-nav-card">
-      <div className="portal-nav-tag">{tag}</div>
-      <h3>{title}</h3>
-      <p>{description}</p>
-    </div>
-  );
-}
-
 export default function RamsComputerRepairRefresh() {
   const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
   const isPortalRoute = currentPath.toLowerCase().startsWith(siteConfig.portalPath.toLowerCase());
@@ -338,7 +296,7 @@ export default function RamsComputerRepairRefresh() {
         .reviews-right { grid-template-columns: 1fr 240px; align-items:start; gap:24px; }
         .portal-shell { grid-template-columns: .95fr 1.05fr; margin-top:28px; }
         .portal-stat-grid { grid-template-columns: repeat(3, minmax(0,1fr)); gap:12px; }
-        .highlight-card, .card.light, .stat-card, .portal-stat, .artifact-card, .portal-nav-card { border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.05); border-radius:20px; padding:18px; }
+        .highlight-card, .card.light, .stat-card, .portal-stat, .portal-nav-card { border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.05); border-radius:20px; padding:18px; }
         .card.dark, .panel, .qr-box, .cta-box, .portal-panel { border:1px solid rgba(255,255,255,.1); background:rgba(15,23,42,.82); border-radius:24px; padding:24px; }
         .card h3, .section-title, .panel-title, .portal-title { margin:0; font-weight:800; }
         .card h3 { font-size:20px; }
@@ -378,7 +336,6 @@ export default function RamsComputerRepairRefresh() {
           .grid4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
           .grid3 { grid-template-columns: repeat(2, minmax(0,1fr)); }
           .portal-stat-grid { grid-template-columns: 1fr 1fr 1fr; }
-          .artifact-grid { grid-template-columns: 1fr; }
           .cta-buttons { align-items: stretch; }
         }
         @media (max-width: 768px) {
