@@ -109,17 +109,6 @@ export default function RAMeowPortal({
                 This is the live RAMeow portal area. RAM&apos;S EYES ONLY! KEEP OUT!
               </p>
 
-              <div className="portal-list" style={{ marginTop: 22 }}>
-                {portalCards.map((card) => (
-                  <PortalNavCard
-                    key={card.title}
-                    title={card.title}
-                    description={card.description}
-                    tag={card.tag}
-                  />
-                ))}
-              </div>
-
               <div style={{ marginTop: 24 }}>
                 <div
                   onDragOver={(e) => {
