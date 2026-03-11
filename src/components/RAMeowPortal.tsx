@@ -1,12 +1,12 @@
 import React from "react";
 
-type PortalFile = {
+export type PortalFile = {
   key: string;
   size: number;
   uploaded: string;
 };
 
-type PortalCard = {
+export type PortalCard = {
   title: string;
   description: string;
   tag: string;
@@ -85,13 +85,20 @@ export default function RAMeowPortal({
             }}
           >
             <div className="logo-row">
-              <img src={siteConfig.logoSrc} alt={siteConfig.businessName} className="logo" />
+              <img
+                src={siteConfig.logoSrc}
+                alt={siteConfig.businessName}
+                className="logo"
+              />
               <div>
                 <span className="brand-name">{siteConfig.businessName}</span>
                 <span className="sub-brand">RAMeow Secure Portal</span>
               </div>
             </div>
-            <a href="/" className="button-ghost">Back to Main Site</a>
+
+            <a href="/" className="button-ghost">
+              Back to Main Site
+            </a>
           </div>
 
           <div className="portal-shell">
@@ -135,16 +142,24 @@ export default function RAMeowPortal({
                     }
                   }}
                   style={{
-                    border: dragActive ? "2px solid #22d3ee" : "2px dashed rgba(255,255,255,.2)",
-                    background: dragActive ? "rgba(34,211,238,.08)" : "rgba(255,255,255,.03)",
+                    border: dragActive
+                      ? "2px solid #22d3ee"
+                      : "2px dashed rgba(255,255,255,.2)",
+                    background: dragActive
+                      ? "rgba(34,211,238,.08)"
+                      : "rgba(255,255,255,.03)",
                     borderRadius: 16,
                     padding: 24,
                     textAlign: "center",
                     marginBottom: 16,
                   }}
                 >
-                  <p style={{ margin: 0, fontWeight: 700 }}>Drag and drop a file here</p>
-                  <p style={{ marginTop: 8, color: "#cbd5e1" }}>or use the button below</p>
+                  <p style={{ margin: 0, fontWeight: 700 }}>
+                    Drag and drop a file here
+                  </p>
+                  <p style={{ marginTop: 8, color: "#cbd5e1" }}>
+                    or use the button below
+                  </p>
 
                   <button
                     type="button"
@@ -181,6 +196,7 @@ export default function RAMeowPortal({
                     <div style={{ color: "#cbd5e1", marginBottom: 8 }}>
                       Uploading... {uploadProgress}%
                     </div>
+
                     <div
                       style={{
                         width: "100%",
@@ -266,7 +282,13 @@ export default function RAMeowPortal({
                               {file.key}
                             </a>
 
-                            <div style={{ color: "#94a3b8", fontSize: 12, marginTop: 6 }}>
+                            <div
+                              style={{
+                                color: "#94a3b8",
+                                fontSize: 12,
+                                marginTop: 6,
+                              }}
+                            >
                               {file.size > 1048576
                                 ? `${(file.size / 1048576).toFixed(2)} MB`
                                 : `${(file.size / 1024).toFixed(1)} KB`}{" "}
@@ -390,10 +412,12 @@ export default function RAMeowPortal({
                     <strong>{files.length}</strong>
                     <span className="portal-file-meta">Saved files</span>
                   </div>
+
                   <div className="portal-stat">
                     <strong>{filteredFiles.length}</strong>
                     <span className="portal-file-meta">Visible files</span>
                   </div>
+
                   <div className="portal-stat">
                     <strong>{selectedPreview ? 1 : 0}</strong>
                     <span className="portal-file-meta">Preview open</span>
