@@ -39,23 +39,7 @@ export default function RamsComputerRepairRefresh() {
     url: siteConfig.domain,
   };
 
-  const portalCards = [
-    {
-      title: "Cloudflare Access protection",
-      description: "Protect the RAMeow route behind Cloudflare Zero Trust so only approved identities can reach the portal.",
-      tag: "Access",
-    },
-    {
-      title: "R2-backed file vault",
-      description: "Store forms, contracts, backups, invoices, and business files in Cloudflare R2 through a Worker-controlled upload flow.",
-      tag: "Storage",
-    },
-    {
-      title: "Deploy-ready SEO files",
-      description: "Keep robots.txt, sitemap.xml, and security headers ready for GitHub and Cloudflare Pages deployment.",
-      tag: "SEO",
-    },
-  ];
+  const portalCards = [];
 
   const {
   files,
