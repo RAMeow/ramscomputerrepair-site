@@ -3,6 +3,7 @@ import reviewQr from "../assets/review-qr.png";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import RAMeowPortal from "./components/RAMeowPortal";
 import PublicSite from "./components/PublicSite";
+import { useRAMeowFiles } from "./components/useRAMeowFiles";
 
 type InfoCard = {
   title: string;
@@ -270,116 +271,24 @@ export default function RamsComputerRepairRefresh() {
     },
   ];
 
-  const [files, setFiles] = useState<PortalFile[]>([]);
-  const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [dragActive, setDragActive] = useState(false);
-  const [selectedPreview, setSelectedPreview] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const {
+  files,
+  uploading,
+  uploadProgress,
+  dragActive,
+  selectedPreview,
+  searchTerm,
+  fileInputRef,
+  filteredFiles,
 
-  async function loadFiles() {
-    const res = await fetch("/api/files");
-    if (!res.ok) return;
+  setDragActive,
+  setSelectedPreview,
+  setSearchTerm,
 
-    const data = await res.json();
-    setFiles(data.files || []);
-  }
-
-  async function deleteFile(key: string) {
-    const confirmed = window.confirm(`Delete "${key}"?`);
-    if (!confirmed) return;
-
-    const res = await fetch("/api/delete", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ key }),
-    });
-
-    if (!res.ok) {
-      alert("Delete failed.");
-      return;
-    }
-
-    if (selectedPreview === key) {
-      setSelectedPreview(null);
-    }
-
-    await loadFiles();
-  }
-
-  function inferPreviewType(key: string) {
-    const lower = key.toLowerCase();
-
-    if (
-      lower.endsWith(".png") ||
-      lower.endsWith(".jpg") ||
-      lower.endsWith(".jpeg") ||
-      lower.endsWith(".gif") ||
-      lower.endsWith(".webp")
-    ) {
-      return "image";
-    }
-
-    if (lower.endsWith(".pdf")) {
-      return "pdf";
-    }
-
-    return "other";
-  }
-
-  async function uploadSelectedFile(file: File) {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    setUploading(true);
-    setUploadProgress(0);
-
-    await new Promise<void>((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", "/api/upload");
-
-      xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-          const percent = Math.round((event.loaded / event.total) * 100);
-          setUploadProgress(percent);
-        }
-      };
-
-      xhr.onload = async () => {
-        setUploading(false);
-
-        if (xhr.status >= 200 && xhr.status < 300) {
-          setUploadProgress(100);
-          await loadFiles();
-          resolve();
-        } else {
-          reject(new Error("Upload failed"));
-        }
-      };
-
-      xhr.onerror = () => {
-        setUploading(false);
-        reject(new Error("Upload failed"));
-      };
-
-      xhr.send(formData);
-    });
-  }
-
-  const filteredFiles = useMemo(() => {
-    const term = searchTerm.trim().toLowerCase();
-    if (!term) return files;
-    return files.filter((file) => file.key.toLowerCase().includes(term));
-  }, [files, searchTerm]);
-
-  useEffect(() => {
-    if (isPortalRoute) {
-      loadFiles();
-    }
-  }, [isPortalRoute]);
+  uploadSelectedFile,
+  deleteFile,
+  inferPreviewType
+} = useRAMeowFiles(isPortalRoute);
 
   return (
     <>
