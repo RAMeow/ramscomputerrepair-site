@@ -568,5 +568,8 @@ export default function RamsComputerRepairRefresh() {
     reviewStats={reviewStats}
     highlights={highlights}
   />
-);
+)}
+      </div>
+    </>
+  );
 }
