@@ -5,6 +5,18 @@ import RAMeowPortal from "./components/RAMeowPortal";
 import PublicSite from "./components/PublicSite";
 import { useRAMeowFiles } from "./components/useRAMeowFiles";
 
+import {
+  siteConfig as buildSiteConfig,
+  residentialServices,
+  businessFocusCards,
+  serviceAreas,
+  commonProblems,
+  trustReasons,
+  reviewStats,
+  highlights,
+} from "./components/siteData";
+
+
 type InfoCard = {
   title: string;
   description: string;
