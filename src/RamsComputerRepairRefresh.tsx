@@ -50,12 +50,13 @@ export default function RamsComputerRepairRefresh() {
   searchTerm,
   fileInputRef,
   filteredFiles,
+
   setDragActive,
   setSelectedPreview,
   setSearchTerm,
+
   uploadSelectedFile,
   deleteFile,
-  renameFile,
   inferPreviewType
 } = useRAMeowFiles(isPortalRoute);
 
@@ -224,7 +225,6 @@ export default function RamsComputerRepairRefresh() {
     inferPreviewType={inferPreviewType}
     uploadSelectedFile={uploadSelectedFile}
     deleteFile={deleteFile}
-    renameFile={renameFile}
   />
         ) : (
             <PublicSite
