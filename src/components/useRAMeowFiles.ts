@@ -28,7 +28,39 @@ export function useRAMeowFiles(isPortalRoute: boolean) {
 
   async function deleteFile(key: string) {
     if (!confirm(`Delete ${key}?`)) return;
+async function renameFile(oldKey: string) {
+  const currentName = oldKey.split("/").pop() || oldKey;
+  const newName = window.prompt("Enter new file name:", currentName);
 
+  if (!newName || newName.trim() === "" || newName === currentName) return;
+
+  const prefix = oldKey.includes("/") ? oldKey.slice(0, oldKey.lastIndexOf("/") + 1) : "";
+  const safeNewName = newName.replace(/[^\w.\- ]+/g, "_");
+  const newKey = `${prefix}${safeNewName}`;
+
+  try {
+    const res = await fetch("/api/rename", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ oldKey, newKey }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Rename failed");
+    }
+
+    if (selectedPreview === oldKey) {
+      setSelectedPreview(newKey);
+    }
+
+    await loadFiles();
+  } catch (err) {
+    console.error("Rename failed", err);
+    alert("Rename failed.");
+  }
+}
     try {
       await fetch("/api/delete", {
         method: "POST",
@@ -108,7 +140,7 @@ export function useRAMeowFiles(isPortalRoute: boolean) {
     }
   }, [isPortalRoute]);
 
-  return {
+    return {
     files,
     uploading,
     uploadProgress,
@@ -122,6 +154,7 @@ export function useRAMeowFiles(isPortalRoute: boolean) {
     setSearchTerm,
     uploadSelectedFile,
     deleteFile,
+    renameFile,
     inferPreviewType,
   };
 }
