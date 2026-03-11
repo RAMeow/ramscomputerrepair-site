@@ -18,7 +18,7 @@ export function useRAMeowFiles(isPortalRoute: boolean) {
 
   async function loadFiles() {
     try {
-      const res = await fetch("/api/list");
+      const res = await fetch("/api/files");
       const data = await res.json();
       setFiles(data.files || []);
     } catch (err) {
@@ -30,8 +30,12 @@ export function useRAMeowFiles(isPortalRoute: boolean) {
     if (!confirm(`Delete ${key}?`)) return;
 
     try {
-      await fetch(`/api/delete/${encodeURIComponent(key)}`, {
-        method: "DELETE",
+      await fetch("/api/delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ key }),
       });
 
       await loadFiles();
@@ -43,11 +47,18 @@ export function useRAMeowFiles(isPortalRoute: boolean) {
   function inferPreviewType(key: string) {
     const lower = key.toLowerCase();
 
-    if (lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".webp"))
+    if (
+      lower.endsWith(".png") ||
+      lower.endsWith(".jpg") ||
+      lower.endsWith(".jpeg") ||
+      lower.endsWith(".webp")
+    ) {
       return "image";
+    }
 
-    if (lower.endsWith(".pdf"))
+    if (lower.endsWith(".pdf")) {
       return "pdf";
+    }
 
     return "other";
   }
@@ -106,11 +117,9 @@ export function useRAMeowFiles(isPortalRoute: boolean) {
     searchTerm,
     fileInputRef,
     filteredFiles,
-
     setDragActive,
     setSelectedPreview,
     setSearchTerm,
-
     uploadSelectedFile,
     deleteFile,
     inferPreviewType,
