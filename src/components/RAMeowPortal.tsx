@@ -288,41 +288,57 @@ export default function RAMeowPortal({
                           </div>
 
                           <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
-                            {(inferPreviewType(file.key) === "image" ||
-                              inferPreviewType(file.key) === "pdf") && (
-                              <button
-                                type="button"
-                                onClick={() => setSelectedPreview(file.key)}
-                                style={{
-                                  border: 0,
-                                  background: "#334155",
-                                  color: "white",
-                                  padding: "10px 14px",
-                                  borderRadius: 10,
-                                  fontWeight: 700,
-                                  cursor: "pointer",
-                                }}
-                              >
-                                Preview
-                              </button>
-                            )}
+  {(inferPreviewType(file.key) === "image" ||
+    inferPreviewType(file.key) === "pdf") && (
+    <button
+      type="button"
+      onClick={() => setSelectedPreview(file.key)}
+      style={{
+        border: 0,
+        background: "#334155",
+        color: "white",
+        padding: "10px 14px",
+        borderRadius: 10,
+        fontWeight: 700,
+        cursor: "pointer",
+      }}
+    >
+      Preview
+    </button>
+  )}
 
-                            <button
-                              type="button"
-                              onClick={() => deleteFile(file.key)}
-                              style={{
-                                border: 0,
-                                background: "#ef4444",
-                                color: "white",
-                                padding: "10px 14px",
-                                borderRadius: 10,
-                                fontWeight: 700,
-                                cursor: "pointer",
-                              }}
-                            >
-                              Delete
-                            </button>
-                          </div>
+  <button
+    type="button"
+    onClick={() => renameFile(file.key)}
+    style={{
+      border: 0,
+      background: "#475569",
+      color: "white",
+      padding: "10px 14px",
+      borderRadius: 10,
+      fontWeight: 700,
+      cursor: "pointer",
+    }}
+  >
+    Rename
+  </button>
+
+  <button
+    type="button"
+    onClick={() => deleteFile(file.key)}
+    style={{
+      border: 0,
+      background: "#ef4444",
+      color: "white",
+      padding: "10px 14px",
+      borderRadius: 10,
+      fontWeight: 700,
+      cursor: "pointer",
+    }}
+  >
+    Delete
+  </button>
+</div>
                         </div>
                       );
                     })}
