@@ -165,17 +165,30 @@ export default function RAMeowPortal({
               marginBottom: 24,
             }}
           >
-            <div className="logo-row">
-              <img
-                src={siteConfig.logoSrc}
-                alt={siteConfig.businessName}
-                className="logo"
-              />
-              <div>
-                <span className="brand-name">{siteConfig.businessName}</span>
-                <span className="sub-brand">RAMeow Secure Portal</span>
-              </div>
-            </div>
+            <div
+  className="logo-row"
+  style={{ cursor: "pointer" }}
+  title="Logout and return to main site"
+  onClick={async () => {
+    try {
+      await fetch("/api/logout", { method: "POST" });
+    } catch (err) {
+      console.error("Logout error", err);
+    }
+
+    window.location.href = "/";
+  }}
+>
+  <img
+    src={siteConfig.logoSrc}
+    alt={siteConfig.businessName}
+    className="logo"
+  />
+  <div>
+    <span className="brand-name">{siteConfig.businessName}</span>
+    <span className="sub-brand">RAMeow Secure Portal</span>
+  </div>
+</div>
 
             <a href="/" className="button-ghost">
               Back to Main Site
