@@ -16,13 +16,19 @@ export const onRequestGet: PagesFunction<{
     }
 
     const headers = new Headers();
+
     object.writeHttpMetadata(headers);
     headers.set("etag", object.httpEtag);
+
+    // Prevent caching private files
     headers.set("Cache-Control", "private, no-store");
 
     const fileName = key.split("/").pop() || key;
+
+    // allow browser preview
     headers.set("Content-Disposition", `inline; filename="${fileName}"`);
 
+    // fallback MIME detection
     if (!headers.get("Content-Type")) {
       const lower = key.toLowerCase();
 
@@ -36,16 +42,21 @@ export const onRequestGet: PagesFunction<{
         headers.set("Content-Type", "image/webp");
       } else if (lower.endsWith(".gif")) {
         headers.set("Content-Type", "image/gif");
+      } else if (lower.endsWith(".txt")) {
+        headers.set("Content-Type", "text/plain");
+      } else if (lower.endsWith(".json")) {
+        headers.set("Content-Type", "application/json");
       } else {
         headers.set("Content-Type", "application/octet-stream");
       }
     }
 
     return new Response(object.body, {
-      headers,
+      headers
     });
+
   } catch (error) {
-    console.error("Download failed:", error);
+    console.error("Download error:", error);
     return new Response("Server error", { status: 500 });
   }
 };
