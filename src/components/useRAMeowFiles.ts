@@ -11,9 +11,9 @@ export function useRAMeowFiles(isPortalRoute: boolean) {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [dragActive, setDragActive] = useState(false);
-  const [selectedPreview, setSelectedPreview] = useState<PortalFile | null>(null);
+  const [selectedPreview, setSelectedPreview] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function loadFiles() {
     try {
@@ -28,57 +28,10 @@ export function useRAMeowFiles(isPortalRoute: boolean) {
 
       const data = await res.json();
       setFiles(Array.isArray(data.files) ? data.files : []);
-    } catch (err) {
-      console.error("Failed loading files", err);
+    } catch (error) {
+      console.error("Failed loading files:", error);
       setFiles([]);
     }
-  }
-
-  async function deleteFile(key: string) {
-    if (!confirm(`Delete ${key}?`)) return;
-
-    try {
-      const res = await fetch("/api/delete", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ key }),
-      });
-
-      if (!res.ok) {
-        throw new Error(`Delete failed: ${res.status}`);
-      }
-
-      await loadFiles();
-
-      setSelectedPreview((current) => {
-        if (current?.key === key) return null;
-        return current;
-      });
-    } catch (err) {
-      console.error("Delete failed", err);
-    }
-  }
-
-  function inferPreviewType(key: string) {
-    const lower = key.toLowerCase();
-
-    if (
-      lower.endsWith(".png") ||
-      lower.endsWith(".jpg") ||
-      lower.endsWith(".jpeg") ||
-      lower.endsWith(".webp") ||
-      lower.endsWith(".gif")
-    ) {
-      return "image";
-    }
-
-    if (lower.endsWith(".pdf")) {
-      return "pdf";
-    }
-
-    return "other";
   }
 
   async function uploadSelectedFile(file: File) {
@@ -90,18 +43,19 @@ export function useRAMeowFiles(isPortalRoute: boolean) {
 
     const xhr = new XMLHttpRequest();
 
-    xhr.upload.onprogress = (event) => {
-      if (event.lengthComputable) {
-        setUploadProgress(Math.round((event.loaded / event.total) * 100));
-      }
-    };
+    const uploadPromise = new Promise<void>((resolve, reject) => {
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          setUploadProgress(Math.round((event.loaded / event.total) * 100));
+        }
+      };
 
-    const promise = new Promise<void>((resolve, reject) => {
-      xhr.onload = () => {
+      xhr.onload = async () => {
         setUploading(false);
 
         if (xhr.status >= 200 && xhr.status < 300) {
           setUploadProgress(100);
+          await loadFiles();
           resolve();
         } else {
           reject(new Error(`Upload failed: ${xhr.status}`));
@@ -110,20 +64,114 @@ export function useRAMeowFiles(isPortalRoute: boolean) {
 
       xhr.onerror = () => {
         setUploading(false);
-        reject(new Error("Upload failed due to a network error."));
+        reject(new Error("Upload failed due to network error"));
       };
     });
 
     xhr.open("POST", "/api/upload");
     xhr.send(formData);
 
-    await promise;
-    await loadFiles();
+    return uploadPromise;
   }
 
-  const filteredFiles = files.filter((f) =>
-    f.key.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  async function deleteFile(key: string) {
+    const confirmed = window.confirm(`Delete "${key}"?`);
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch("/api/delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ key }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || `Delete failed: ${res.status}`);
+      }
+
+      if (selectedPreview === key) {
+        setSelectedPreview(null);
+      }
+
+      await loadFiles();
+    } catch (error) {
+      console.error("Delete failed:", error);
+      alert(error instanceof Error ? error.message : "Delete failed.");
+    }
+  }
+
+  async function renameFile(oldKey: string, newKey: string) {
+    const trimmedNewKey = newKey.trim();
+
+    if (!trimmedNewKey) {
+      alert("Please enter a new filename.");
+      return false;
+    }
+
+    if (trimmedNewKey === oldKey) {
+      return true;
+    }
+
+    try {
+      const res = await fetch("/api/rename", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          oldKey,
+          newKey: trimmedNewKey,
+        }),
+      });
+
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        throw new Error(data?.error || `Rename failed: ${res.status}`);
+      }
+
+      if (selectedPreview === oldKey) {
+        setSelectedPreview(trimmedNewKey);
+      }
+
+      await loadFiles();
+      return true;
+    } catch (error) {
+      console.error("Rename failed:", error);
+      alert(error instanceof Error ? error.message : "Rename failed.");
+      return false;
+    }
+  }
+
+  function inferPreviewType(key: string): "image" | "pdf" | "other" {
+    const lower = key.toLowerCase();
+
+    if (
+      lower.endsWith(".png") ||
+      lower.endsWith(".jpg") ||
+      lower.endsWith(".jpeg") ||
+      lower.endsWith(".webp") ||
+      lower.endsWith(".gif") ||
+      lower.endsWith(".bmp") ||
+      lower.endsWith(".svg")
+    ) {
+      return "image";
+    }
+
+    if (lower.endsWith(".pdf")) {
+      return "pdf";
+    }
+
+    return "other";
+  }
+
+  const filteredFiles = files.filter((file) => {
+    const fileName = file.key.split("/").pop()?.toLowerCase() || file.key.toLowerCase();
+    return fileName.includes(searchTerm.toLowerCase());
+  });
 
   useEffect(() => {
     if (isPortalRoute) {
@@ -143,9 +191,10 @@ export function useRAMeowFiles(isPortalRoute: boolean) {
     setDragActive,
     setSelectedPreview,
     setSearchTerm,
+    loadFiles,
     uploadSelectedFile,
     deleteFile,
+    renameFile,
     inferPreviewType,
-    loadFiles,
   };
 }
