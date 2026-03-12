@@ -1,6 +1,7 @@
 export const onRequestPost: PagesFunction<{
   RAMEOW_PORTAL_PASSWORD: string;
   RAMEOW_SESSION_TOKEN: string;
+  RAMEOW_BUCKET: R2Bucket;
 }> = async ({ request, env }) => {
   try {
     const body = await request.json().catch(() => null);
@@ -17,6 +18,37 @@ export const onRequestPost: PagesFunction<{
     }
 
     if (password !== env.RAMEOW_PORTAL_PASSWORD) {
+      const ip =
+        request.headers.get("CF-Connecting-IP") ||
+        request.headers.get("x-forwarded-for") ||
+        "unknown";
+
+      const userAgent = request.headers.get("user-agent") || "unknown";
+      const now = new Date();
+      const day = now.toISOString().split("T")[0];
+      const timestamp = now.toISOString().replace(/[:.]/g, "-");
+      const logKey = `_system/login-attempts/${day}/${timestamp}-${Math.random()
+        .toString(36)
+        .slice(2, 10)}.json`;
+
+      const logBody = {
+        type: "failed-login",
+        ip,
+        userAgent,
+        path: new URL(request.url).pathname,
+        timestamp: now.toISOString(),
+      };
+
+      try {
+        await env.RAMEOW_BUCKET.put(logKey, JSON.stringify(logBody, null, 2), {
+          httpMetadata: {
+            contentType: "application/json",
+          },
+        });
+      } catch (logError) {
+        console.error("Failed login log write error:", logError);
+      }
+
       return new Response(
         JSON.stringify({ error: "Invalid password" }),
         {
