@@ -3,6 +3,7 @@ import reviewQr from "../assets/review-qr.png";
 import React from "react";
 import RAMeowPortal from "./components/RAMeowPortal";
 import PublicSite from "./components/PublicSite";
+import RAMeowLogin from "./components/RAMeowLogin";
 import { useRAMeowFiles } from "./components/useRAMeowFiles";
 
 import {
@@ -17,10 +18,14 @@ import {
 } from "./components/siteData";
 
 
-export default function RamsComputerRepairRefresh() {
-  const siteConfig = buildSiteConfig(logo, reviewQr);
-  const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
-  const isPortalRoute = currentPath.toLowerCase().startsWith(siteConfig.portalPath.toLowerCase());
+const siteConfig = buildSiteConfig(logo, reviewQr);
+const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
+const loginPath = "/RAMeow-login";
+
+const isLoginRoute = currentPath.toLowerCase().startsWith(loginPath.toLowerCase());
+const isPortalRoute =
+  !isLoginRoute &&
+  currentPath.toLowerCase().startsWith(siteConfig.portalPath.toLowerCase());
   
 
   const localBusinessSchema = {
@@ -58,6 +63,10 @@ export default function RamsComputerRepairRefresh() {
   renameFile,
   inferPreviewType,
 } = useRAMeowFiles(isPortalRoute);
+
+if (isLoginRoute) {
+  return <RAMeowLogin />;
+}
 
   return (
     <>
