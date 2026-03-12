@@ -85,6 +85,11 @@ export default function RamsComputerRepairRefresh() {
         .header-inner { display: flex; flex-direction: column; gap: 14px; padding: 16px 0; }
         .header-top { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
         .logo-row { display: flex; align-items: center; gap: 12px; min-width: 0; }
+        
+        .logo-row:hover {
+  opacity: 0.85;
+  transform: scale(1.02);
+}
         .logo { height: 48px; width: auto; filter: drop-shadow(0 0 12px rgba(34,211,238,.18)); }
         .brand-name { display:block; font-size: 18px; font-weight: 700; letter-spacing: .3px; }
         .sub-brand { display:block; font-size: 11px; text-transform: uppercase; letter-spacing: 3px; color: #67e8f9; }
