@@ -17,16 +17,21 @@ import {
   highlights,
 } from "./components/siteData";
 
+export default function RamsComputerRepairRefresh() {
+  const siteConfig = buildSiteConfig(logo, reviewQr);
+  const currentPath =
+    typeof window !== "undefined" ? window.location.pathname : "/";
+  const loginPath = "/RAMeow-login";
 
-const siteConfig = buildSiteConfig(logo, reviewQr);
-const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
-const loginPath = "/RAMeow-login";
+  const isLoginRoute = currentPath
+    .toLowerCase()
+    .startsWith(loginPath.toLowerCase());
 
-const isLoginRoute = currentPath.toLowerCase().startsWith(loginPath.toLowerCase());
-const isPortalRoute =
-  !isLoginRoute &&
-  currentPath.toLowerCase().startsWith(siteConfig.portalPath.toLowerCase());
-  
+  const isPortalRoute =
+    !isLoginRoute &&
+    currentPath
+      .toLowerCase()
+      .startsWith(siteConfig.portalPath.toLowerCase());
 
   const localBusinessSchema = {
     "@context": "https://schema.org",
@@ -47,26 +52,26 @@ const isPortalRoute =
   const portalCards = [];
 
   const {
-  files,
-  uploading,
-  uploadProgress,
-  dragActive,
-  selectedPreview,
-  searchTerm,
-  fileInputRef,
-  filteredFiles,
-  setDragActive,
-  setSelectedPreview,
-  setSearchTerm,
-  uploadSelectedFile,
-  deleteFile,
-  renameFile,
-  inferPreviewType,
-} = useRAMeowFiles(isPortalRoute);
+    files,
+    uploading,
+    uploadProgress,
+    dragActive,
+    selectedPreview,
+    searchTerm,
+    fileInputRef,
+    filteredFiles,
+    setDragActive,
+    setSelectedPreview,
+    setSearchTerm,
+    uploadSelectedFile,
+    deleteFile,
+    renameFile,
+    inferPreviewType,
+  } = useRAMeowFiles(isPortalRoute);
 
-if (isLoginRoute) {
-  return <RAMeowLogin />;
-}
+  if (isLoginRoute) {
+    return <RAMeowLogin />;
+  }
 
   return (
     <>
@@ -177,10 +182,26 @@ if (isLoginRoute) {
 
       <div className="page">
         <div className="bg">
-          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" preserveAspectRatio="none">
+          <svg
+            width="100%"
+            height="100%"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 1600 1200"
+            preserveAspectRatio="none"
+          >
             <defs>
-              <pattern id="pcbPattern" width="260" height="220" patternUnits="userSpaceOnUse">
-                <g stroke="#22d3ee" strokeWidth="1.4" fill="none" strokeLinecap="square">
+              <pattern
+                id="pcbPattern"
+                width="260"
+                height="220"
+                patternUnits="userSpaceOnUse"
+              >
+                <g
+                  stroke="#22d3ee"
+                  strokeWidth="1.4"
+                  fill="none"
+                  strokeLinecap="square"
+                >
                   <path d="M10 40 H200" />
                   <path d="M60 90 H240" />
                   <path d="M20 150 H210" />
@@ -213,47 +234,47 @@ if (isLoginRoute) {
         </div>
 
         {isPortalRoute ? (
-  <RAMeowPortal
-  siteConfig={siteConfig}
-  portalCards={portalCards}
-  files={files}
-  uploading={uploading}
-  uploadProgress={uploadProgress}
-  dragActive={dragActive}
-  selectedPreview={selectedPreview}
-  searchTerm={searchTerm}
-  setSearchTerm={setSearchTerm}
-  setDragActive={setDragActive}
-  setSelectedPreview={setSelectedPreview}
-  fileInputRef={fileInputRef}
-  filteredFiles={filteredFiles}
-  inferPreviewType={inferPreviewType}
-  uploadSelectedFile={uploadSelectedFile}
-  deleteFile={deleteFile}
-  renameFile={renameFile}
-/>
+          <RAMeowPortal
+            siteConfig={siteConfig}
+            portalCards={portalCards}
+            files={files}
+            uploading={uploading}
+            uploadProgress={uploadProgress}
+            dragActive={dragActive}
+            selectedPreview={selectedPreview}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            setDragActive={setDragActive}
+            setSelectedPreview={setSelectedPreview}
+            fileInputRef={fileInputRef}
+            filteredFiles={filteredFiles}
+            inferPreviewType={inferPreviewType}
+            uploadSelectedFile={uploadSelectedFile}
+            deleteFile={deleteFile}
+            renameFile={renameFile}
+          />
         ) : (
-            <PublicSite
-    siteConfig={{
-      businessName: siteConfig.businessName,
-      phoneDisplay: siteConfig.phoneDisplay,
-      phoneHref: siteConfig.phoneHref,
-      location: siteConfig.location,
-      email: siteConfig.email,
-      domain: siteConfig.domain,
-      logoSrc: siteConfig.logoSrc,
-      reviewQrSrc: siteConfig.reviewQrSrc,
-    }}
-    residentialServices={residentialServices}
-    businessFocusCards={businessFocusCards}
-    commonProblems={commonProblems}
-    trustReasons={trustReasons}
-    serviceAreas={serviceAreas}
-    reviewStats={reviewStats}
-    highlights={highlights}
-  />
-)}
+          <PublicSite
+            siteConfig={{
+              businessName: siteConfig.businessName,
+              phoneDisplay: siteConfig.phoneDisplay,
+              phoneHref: siteConfig.phoneHref,
+              location: siteConfig.location,
+              email: siteConfig.email,
+              domain: siteConfig.domain,
+              logoSrc: siteConfig.logoSrc,
+              reviewQrSrc: siteConfig.reviewQrSrc,
+            }}
+            residentialServices={residentialServices}
+            businessFocusCards={businessFocusCards}
+            commonProblems={commonProblems}
+            trustReasons={trustReasons}
+            serviceAreas={serviceAreas}
+            reviewStats={reviewStats}
+            highlights={highlights}
+          />
+        )}
       </div>
     </>
   );
-
+}
