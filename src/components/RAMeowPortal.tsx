@@ -355,17 +355,14 @@ export default function RAMeowPortal({
       borderRadius: 10,
       fontWeight: 700,
       cursor: "pointer",
-    }}
-  >
-    Delete
-  </button>
-</div>
+        }}
+                            >
+                              Delete
+                            </button>
                           </div>
                         </div>
                       );
                     })}
-                  </div>
-                )}
 
                 {selectedPreview && (
                   <div
