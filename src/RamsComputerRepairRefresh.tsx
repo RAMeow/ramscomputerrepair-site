@@ -1,6 +1,6 @@
 import logo from "../assets/logo.png";
 import reviewQr from "../assets/review-qr.png";
-import React from "react";
+import React, { useEffect } from "react";
 import RAMeowPortal from "./components/RAMeowPortal";
 import PublicSite from "./components/PublicSite";
 import RAMeowLogin from "./components/RAMeowLogin";
@@ -19,6 +19,21 @@ import {
 
 export default function RamsComputerRepairRefresh() {
   const siteConfig = buildSiteConfig(logo, reviewQr);
+  
+  useEffect(() => {
+  const handler = (e: KeyboardEvent) => {
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "r") {
+      window.location.href = "/RAMeow-login";
+    }
+  };
+
+  window.addEventListener("keydown", handler);
+
+  return () => {
+    window.removeEventListener("keydown", handler);
+  };
+}, []);
+  
   const currentPath =
     typeof window !== "undefined" ? window.location.pathname : "/";
   const loginPath = "/RAMeow-login";
