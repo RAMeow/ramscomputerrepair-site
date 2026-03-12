@@ -5,6 +5,7 @@ export const onRequestGet: PagesFunction<{
     const listed = await env.RAMEOW_BUCKET.list();
 
     const files = (listed.objects || [])
+      .filter((object) => !object.key.startsWith("_system/"))
       .map((object) => ({
         key: object.key,
         size: object.size ?? 0,
