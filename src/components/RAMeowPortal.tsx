@@ -103,16 +103,28 @@ export default function RAMeowPortal({
             </a>
           </div>
 
-          <div className="portal-shell">
-            <div className="portal-panel">
-              <p className="portal-kicker">/RAMeow</p>
-              <h1 className="portal-title">RAM's Portal</h1>
-              <div className="portal-copy" style={{ marginTop: 10 }}>
-  <div style={{ fontSize: 20, fontWeight: 700 }}>
+          <div className="portal-copy" style={{ marginTop: 10 }}>
+  <div
+    style={{
+      fontSize: 20,
+      fontWeight: 700,
+      letterSpacing: ".03em"
+    }}
+  >
     This is the live RAMeow portal area.
   </div>
 
-  <div style={{ fontSize: 24, fontWeight: 900, marginTop: 6 }}>
+  <div
+    style={{
+      fontSize: 26,
+      fontWeight: 900,
+      marginTop: 8,
+      color: "#ef4444",
+      textTransform: "uppercase",
+      letterSpacing: ".06em",
+      textShadow: "0 0 8px rgba(239,68,68,.6)"
+    }}
+  >
     RAM&apos;S EYES ONLY! KEEP OUT!
   </div>
 </div>
