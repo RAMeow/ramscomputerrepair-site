@@ -11,18 +11,26 @@ export function useRAMeowFiles(isPortalRoute: boolean) {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [dragActive, setDragActive] = useState(false);
-  const [selectedPreview, setSelectedPreview] = useState<string | null>(null);
+  const [selectedPreview, setSelectedPreview] = useState<PortalFile | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   async function loadFiles() {
     try {
-      const res = await fetch("/api/list");
+      const res = await fetch("/api/files", {
+        method: "GET",
+        cache: "no-store",
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to load files: ${res.status}`);
+      }
+
       const data = await res.json();
-      setFiles(data.files || []);
+      setFiles(Array.isArray(data.files) ? data.files : []);
     } catch (err) {
       console.error("Failed loading files", err);
+      setFiles([]);
     }
   }
 
@@ -30,11 +38,24 @@ export function useRAMeowFiles(isPortalRoute: boolean) {
     if (!confirm(`Delete ${key}?`)) return;
 
     try {
-      await fetch(`/api/delete/${encodeURIComponent(key)}`, {
-        method: "DELETE",
+      const res = await fetch("/api/delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ key }),
       });
 
+      if (!res.ok) {
+        throw new Error(`Delete failed: ${res.status}`);
+      }
+
       await loadFiles();
+
+      setSelectedPreview((current) => {
+        if (current?.key === key) return null;
+        return current;
+      });
     } catch (err) {
       console.error("Delete failed", err);
     }
@@ -43,11 +64,19 @@ export function useRAMeowFiles(isPortalRoute: boolean) {
   function inferPreviewType(key: string) {
     const lower = key.toLowerCase();
 
-    if (lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".webp"))
+    if (
+      lower.endsWith(".png") ||
+      lower.endsWith(".jpg") ||
+      lower.endsWith(".jpeg") ||
+      lower.endsWith(".webp") ||
+      lower.endsWith(".gif")
+    ) {
       return "image";
+    }
 
-    if (lower.endsWith(".pdf"))
+    if (lower.endsWith(".pdf")) {
       return "pdf";
+    }
 
     return "other";
   }
@@ -70,13 +99,18 @@ export function useRAMeowFiles(isPortalRoute: boolean) {
     const promise = new Promise<void>((resolve, reject) => {
       xhr.onload = () => {
         setUploading(false);
-        setUploadProgress(100);
-        resolve();
+
+        if (xhr.status >= 200 && xhr.status < 300) {
+          setUploadProgress(100);
+          resolve();
+        } else {
+          reject(new Error(`Upload failed: ${xhr.status}`));
+        }
       };
 
       xhr.onerror = () => {
         setUploading(false);
-        reject();
+        reject(new Error("Upload failed due to a network error."));
       };
     });
 
@@ -106,13 +140,12 @@ export function useRAMeowFiles(isPortalRoute: boolean) {
     searchTerm,
     fileInputRef,
     filteredFiles,
-
     setDragActive,
     setSelectedPreview,
     setSearchTerm,
-
     uploadSelectedFile,
     deleteFile,
     inferPreviewType,
+    loadFiles,
   };
 }
