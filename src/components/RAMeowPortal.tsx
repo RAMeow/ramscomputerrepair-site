@@ -107,9 +107,15 @@ export default function RAMeowPortal({
             <div className="portal-panel">
               <p className="portal-kicker">/RAMeow</p>
               <h1 className="portal-title">RAM's Portal</h1>
-              <p className="portal-copy">
-                This is the live RAMeow portal area. RAM'S EYES ONLY! KEEP OUT!
-              </p>
+              <div className="portal-copy" style={{ marginTop: 10 }}>
+  <div style={{ fontSize: 20, fontWeight: 700 }}>
+    This is the live RAMeow portal area.
+  </div>
+
+  <div style={{ fontSize: 24, fontWeight: 900, marginTop: 6 }}>
+    RAM&apos;S EYES ONLY! KEEP OUT!
+  </div>
+</div>
 
               <div className="portal-list" style={{ marginTop: 22 }}>
                 {portalCards.map((card) => (
