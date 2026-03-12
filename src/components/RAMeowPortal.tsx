@@ -420,13 +420,12 @@ export default function RAMeowPortal({
                           border: "1px solid rgba(255,255,255,.1)",
                           borderRadius: 12,
                           background: "white",
-                        }}
+                              }}
                       />
                     )}
                   </div>
                 )}
               </div>
-            </div>
 
             <div className="portal-panel">
               <p className="portal-kicker">Dashboard</p>
