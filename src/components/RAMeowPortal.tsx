@@ -53,6 +53,82 @@ function PortalNavCard({
   );
 }
 
+function getFileIcon(key: string) {
+  const lower = key.toLowerCase();
+
+  /* Windows executables / scripts */
+  if (
+    lower.endsWith(".exe") ||
+    lower.endsWith(".bat") ||
+    lower.endsWith(".cmd") ||
+    lower.endsWith(".ps1") ||
+    lower.endsWith(".msi")
+  ) {
+    return "⚙️";
+  }
+
+  if (lower.endsWith(".pdf")) return "📄";
+
+  if (
+    lower.endsWith(".png") ||
+    lower.endsWith(".jpg") ||
+    lower.endsWith(".jpeg") ||
+    lower.endsWith(".webp") ||
+    lower.endsWith(".gif") ||
+    lower.endsWith(".bmp") ||
+    lower.endsWith(".svg")
+  ) {
+    return "🖼️";
+  }
+
+  if (
+    lower.endsWith(".zip") ||
+    lower.endsWith(".rar") ||
+    lower.endsWith(".7z") ||
+    lower.endsWith(".tar") ||
+    lower.endsWith(".gz")
+  ) {
+    return "🗜️";
+  }
+
+  if (
+    lower.endsWith(".doc") ||
+    lower.endsWith(".docx") ||
+    lower.endsWith(".txt") ||
+    lower.endsWith(".rtf")
+  ) {
+    return "📝";
+  }
+
+  if (
+    lower.endsWith(".xls") ||
+    lower.endsWith(".xlsx") ||
+    lower.endsWith(".csv")
+  ) {
+    return "📊";
+  }
+
+  if (
+    lower.endsWith(".mp4") ||
+    lower.endsWith(".mov") ||
+    lower.endsWith(".avi") ||
+    lower.endsWith(".mkv")
+  ) {
+    return "🎞️";
+  }
+
+  if (
+    lower.endsWith(".mp3") ||
+    lower.endsWith(".wav") ||
+    lower.endsWith(".ogg") ||
+    lower.endsWith(".m4a")
+  ) {
+    return "🎵";
+  }
+
+  return "📁";
+}
+
 export default function RAMeowPortal({
   siteConfig,
   portalCards,
@@ -326,18 +402,22 @@ export default function RAMeowPortal({
                         >
                           <div style={{ minWidth: 0 }}>
                             <a
-                              href={fileUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              style={{
-                                color: "#67e8f9",
-                                textDecoration: "none",
-                                fontWeight: 600,
-                                wordBreak: "break-word",
-                              }}
-                            >
-                              {file.key}
-                            </a>
+  href={fileUrl}
+  target="_blank"
+  rel="noreferrer"
+  style={{
+    color: "#67e8f9",
+    textDecoration: "none",
+    fontWeight: 600,
+    wordBreak: "break-word",
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
+  }}
+>
+  <span aria-hidden="true">{getFileIcon(file.key)}</span>
+  <span>{file.key}</span>
+</a>
 
                             <div
                               style={{
