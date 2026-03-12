@@ -255,6 +255,8 @@ export default function RAMeowPortal({
                 ) : (
                   <div style={{ display: "grid", gap: 12 }}>
                     {filteredFiles.map((file) => {
+                      const fileUrl = `/api/download?key=${encodeURIComponent(file.key)}`;
+
                       return (
                         <div
                           key={file.key}
@@ -271,7 +273,9 @@ export default function RAMeowPortal({
                         >
                           <div style={{ minWidth: 0 }}>
                             <a
-                              href={`/api/download/${encodeURIComponent(file.key)}`}
+                              href={fileUrl}
+                              target="_blank"
+                              rel="noreferrer"
                               style={{
                                 color: "#67e8f9",
                                 textDecoration: "none",
@@ -378,7 +382,7 @@ export default function RAMeowPortal({
 
                     {inferPreviewType(selectedPreview) === "image" && (
                       <img
-                        src={`/api/download/${encodeURIComponent(selectedPreview)}`}
+                        src={`/api/download?key=${encodeURIComponent(selectedPreview)}`}
                         alt={selectedPreview}
                         style={{ maxWidth: "100%", borderRadius: 12 }}
                       />
@@ -386,7 +390,7 @@ export default function RAMeowPortal({
 
                     {inferPreviewType(selectedPreview) === "pdf" && (
                       <iframe
-                        src={`/api/download/${encodeURIComponent(selectedPreview)}`}
+                        src={`/api/download?key=${encodeURIComponent(selectedPreview)}`}
                         title={selectedPreview}
                         style={{
                           width: "100%",
