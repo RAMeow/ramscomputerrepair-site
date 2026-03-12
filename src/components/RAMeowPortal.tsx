@@ -106,9 +106,9 @@ export default function RAMeowPortal({
           <div className="portal-shell">
             <div className="portal-panel">
               <p className="portal-kicker">/RAMeow</p>
-              <h1 className="portal-title">RAM/s Portal</h1>
+              <h1 className="portal-title">RAM's Portal</h1>
               <p className="portal-copy">
-                This is the live RAMeow portal area. RAM&apos;S EYES ONLY! KEEP OUT!
+                This is the live RAMeow portal area. RAM'S EYES ONLY! KEEP OUT!
               </p>
 
               <div className="portal-list" style={{ marginTop: 22 }}>
