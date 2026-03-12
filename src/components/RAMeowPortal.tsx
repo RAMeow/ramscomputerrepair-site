@@ -32,6 +32,7 @@ type RAMeowPortalProps = {
   inferPreviewType: (key: string) => "image" | "pdf" | "other";
   uploadSelectedFile: (file: File) => Promise<void>;
   deleteFile: (key: string) => Promise<void>;
+  renameFile: (oldKey: string, newKey: string) => Promise<boolean>;
 };
 
 function PortalNavCard({
@@ -69,6 +70,7 @@ export default function RAMeowPortal({
   inferPreviewType,
   uploadSelectedFile,
   deleteFile,
+  renameFile,
 }: RAMeowPortalProps) {
   return (
     <main className="page" style={{ background: "transparent" }}>
@@ -106,9 +108,9 @@ export default function RAMeowPortal({
               <p className="portal-kicker">/RAMeow</p>
               <h1 className="portal-title">RAM'S Portal</h1>
               <p className="portal-copy">
-                This is the live RAMeow portal area. 
-                RAM&apos;S EYES ONLY! 
-                KEEP OUT!
+              <p  This is the live RAMeow portal area. </p>
+              <p RAM'S EYES ONLY! </p>
+              <p KEEP OUT! </p>
               </p>
 
               <div className="portal-list" style={{ marginTop: 22 }}>
@@ -303,23 +305,63 @@ export default function RAMeowPortal({
                           </div>
 
                           <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
-                            {(inferPreviewType(file.key) === "image" ||
-                              inferPreviewType(file.key) === "pdf") && (
-                              <button
-                                type="button"
-                                onClick={() => setSelectedPreview(file.key)}
-                                style={{
-                                  border: 0,
-                                  background: "#334155",
-                                  color: "white",
-                                  padding: "10px 14px",
-                                  borderRadius: 10,
-                                  fontWeight: 700,
-                                  cursor: "pointer",
-                                }}
-                              >
-                                Preview
-                              </button>
+  {(inferPreviewType(file.key) === "image" ||
+    inferPreviewType(file.key) === "pdf") && (
+    <button
+      type="button"
+      onClick={() => setSelectedPreview(file.key)}
+      style={{
+        border: 0,
+        background: "#334155",
+        color: "white",
+        padding: "10px 14px",
+        borderRadius: 10,
+        fontWeight: 700,
+        cursor: "pointer",
+      }}
+    >
+      Preview
+    </button>
+  )}
+
+  <button
+    type="button"
+    onClick={async () => {
+      const newName = prompt("Enter new filename", file.key);
+      if (!newName) return;
+
+      const success = await renameFile(file.key, newName);
+      if (success) alert("File renamed.");
+    }}
+    style={{
+      border: 0,
+      background: "#2563eb",
+      color: "white",
+      padding: "10px 14px",
+      borderRadius: 10,
+      fontWeight: 700,
+      cursor: "pointer",
+    }}
+  >
+    Rename
+  </button>
+
+  <button
+    type="button"
+    onClick={() => deleteFile(file.key)}
+    style={{
+      border: 0,
+      background: "#ef4444",
+      color: "white",
+      padding: "10px 14px",
+      borderRadius: 10,
+      fontWeight: 700,
+      cursor: "pointer",
+    }}
+  >
+    Delete
+  </button>
+</div>
                             )}
 
                             <button
