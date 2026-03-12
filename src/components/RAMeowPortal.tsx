@@ -156,19 +156,29 @@ export default function RAMeowPortal({
                   }}
                   onDragLeave={() => setDragActive(false)}
                   onDrop={async (e) => {
-                    e.preventDefault();
-                    setDragActive(false);
+  e.preventDefault();
+  setDragActive(false);
 
-                    const droppedFile = e.dataTransfer.files?.[0];
-                    if (!droppedFile) return;
+  const droppedFiles = Array.from(e.dataTransfer.files || []);
+  if (droppedFiles.length === 0) return;
 
-                    try {
-                      await uploadSelectedFile(droppedFile);
-                      alert("Upload successful.");
-                    } catch {
-                      alert("Upload failed.");
-                    }
-                  }}
+  let successCount = 0;
+
+  for (const droppedFile of droppedFiles) {
+    try {
+      await uploadSelectedFile(droppedFile);
+      successCount++;
+    } catch {
+      console.error(`Upload failed for ${droppedFile.name}`);
+    }
+  }
+
+  alert(
+    successCount === droppedFiles.length
+      ? `${successCount} file(s) uploaded successfully.`
+      : `${successCount} of ${droppedFiles.length} file(s) uploaded successfully.`
+  );
+}}
                   style={{
                     border: dragActive
                       ? "2px solid #22d3ee"
@@ -200,23 +210,34 @@ export default function RAMeowPortal({
                   </button>
 
                   <input
-                    ref={fileInputRef}
-                    type="file"
-                    style={{ display: "none" }}
-                    onChange={async (e) => {
-                      const chosenFile = e.target.files?.[0];
-                      if (!chosenFile) return;
+  ref={fileInputRef}
+  type="file"
+  multiple
+  style={{ display: "none" }}
+  onChange={async (e) => {
+    const chosenFiles = Array.from(e.target.files || []);
+    if (chosenFiles.length === 0) return;
 
-                      try {
-                        await uploadSelectedFile(chosenFile);
-                        alert("Upload successful.");
-                      } catch {
-                        alert("Upload failed.");
-                      } finally {
-                        e.currentTarget.value = "";
-                      }
-                    }}
-                  />
+    let successCount = 0;
+
+    for (const chosenFile of chosenFiles) {
+      try {
+        await uploadSelectedFile(chosenFile);
+        successCount++;
+      } catch {
+        console.error(`Upload failed for ${chosenFile.name}`);
+      }
+    }
+
+    alert(
+      successCount === chosenFiles.length
+        ? `${successCount} file(s) uploaded successfully.`
+        : `${successCount} of ${chosenFiles.length} file(s) uploaded successfully.`
+    );
+
+    e.currentTarget.value = "";
+  }}
+/>
                 </div>
 
                 {uploading && (
