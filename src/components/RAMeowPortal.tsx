@@ -106,10 +106,10 @@ export default function RAMeowPortal({
           <div className="portal-shell">
             <div className="portal-panel">
               <p className="portal-kicker">/RAMeow</p>
-              <h1 className="portal-title">RAM'S Portal</h1>
+              <h1 className="portal-title">RAM/s Portal</h1>
               <p className="portal-copy">
-  This is the live RAMeow portal area. RAM&apos;S EYES ONLY! KEEP OUT!
-</p>
+                This is the live RAMeow portal area. RAM&apos;S EYES ONLY! KEEP OUT!
+              </p>
 
               <div className="portal-list" style={{ marginTop: 22 }}>
                 {portalCards.map((card) => (
@@ -156,9 +156,7 @@ export default function RAMeowPortal({
                     marginBottom: 16,
                   }}
                 >
-                  <p style={{ margin: 0, fontWeight: 700 }}>
-                    Drag and drop a file here
-                  </p>
+                  <p style={{ margin: 0, fontWeight: 700 }}>Drag and drop a file here</p>
                   <p style={{ marginTop: 8, color: "#cbd5e1" }}>
                     or use the button below
                   </p>
@@ -303,59 +301,61 @@ export default function RAMeowPortal({
                           </div>
 
                           <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
-  {(inferPreviewType(file.key) === "image" ||
-    inferPreviewType(file.key) === "pdf") && (
-    <button
-      type="button"
-      onClick={() => setSelectedPreview(file.key)}
-      style={{
-        border: 0,
-        background: "#334155",
-        color: "white",
-        padding: "10px 14px",
-        borderRadius: 10,
-        fontWeight: 700,
-        cursor: "pointer",
-      }}
-    >
-      Preview
-    </button>
-  )}
+                            {(inferPreviewType(file.key) === "image" ||
+                              inferPreviewType(file.key) === "pdf") && (
+                              <button
+                                type="button"
+                                onClick={() => setSelectedPreview(file.key)}
+                                style={{
+                                  border: 0,
+                                  background: "#334155",
+                                  color: "white",
+                                  padding: "10px 14px",
+                                  borderRadius: 10,
+                                  fontWeight: 700,
+                                  cursor: "pointer",
+                                }}
+                              >
+                                Preview
+                              </button>
+                            )}
 
-  <button
-    type="button"
-    onClick={async () => {
-      const newName = prompt("Enter new filename", file.key);
-      if (!newName) return;
+                            <button
+                              type="button"
+                              onClick={async () => {
+                                const newName = window.prompt("Enter new filename", file.key);
+                                if (!newName) return;
 
-      const success = await renameFile(file.key, newName);
-      if (success) alert("File renamed.");
-    }}
-    style={{
-      border: 0,
-      background: "#2563eb",
-      color: "white",
-      padding: "10px 14px",
-      borderRadius: 10,
-      fontWeight: 700,
-      cursor: "pointer",
-    }}
-  >
-    Rename
-  </button>
+                                const success = await renameFile(file.key, newName);
+                                if (success) {
+                                  alert("File renamed.");
+                                }
+                              }}
+                              style={{
+                                border: 0,
+                                background: "#2563eb",
+                                color: "white",
+                                padding: "10px 14px",
+                                borderRadius: 10,
+                                fontWeight: 700,
+                                cursor: "pointer",
+                              }}
+                            >
+                              Rename
+                            </button>
 
-  <button
-    type="button"
-    onClick={() => deleteFile(file.key)}
-    style={{
-      border: 0,
-      background: "#ef4444",
-      color: "white",
-      padding: "10px 14px",
-      borderRadius: 10,
-      fontWeight: 700,
-      cursor: "pointer",
-        }}
+                            <button
+                              type="button"
+                              onClick={() => deleteFile(file.key)}
+                              style={{
+                                border: 0,
+                                background: "#ef4444",
+                                color: "white",
+                                padding: "10px 14px",
+                                borderRadius: 10,
+                                fontWeight: 700,
+                                cursor: "pointer",
+                              }}
                             >
                               Delete
                             </button>
@@ -363,6 +363,8 @@ export default function RAMeowPortal({
                         </div>
                       );
                     })}
+                  </div>
+                )}
 
                 {selectedPreview && (
                   <div
@@ -420,12 +422,13 @@ export default function RAMeowPortal({
                           border: "1px solid rgba(255,255,255,.1)",
                           borderRadius: 12,
                           background: "white",
-                              }}
+                        }}
                       />
                     )}
                   </div>
                 )}
               </div>
+            </div>
 
             <div className="portal-panel">
               <p className="portal-kicker">Dashboard</p>
@@ -460,8 +463,8 @@ export default function RAMeowPortal({
                 >
                   <h3 style={{ marginTop: 0, marginBottom: 10 }}>Portal Notes</h3>
                   <p className="portal-note">
-                    Use this area to manage uploads, review files, preview images or PDFs,
-                    and delete outdated items from your private RAMeow vault.
+                    Use this area to manage uploads, review files, preview images or
+                    PDFs, and delete outdated items from your private RAMeow vault.
                   </p>
                 </div>
               </div>
