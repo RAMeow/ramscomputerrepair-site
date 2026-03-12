@@ -360,24 +360,6 @@ export default function RAMeowPortal({
     Delete
   </button>
 </div>
-</div>
-                            )}
-
-                            <button
-                              type="button"
-                              onClick={() => deleteFile(file.key)}
-                              style={{
-                                border: 0,
-                                background: "#ef4444",
-                                color: "white",
-                                padding: "10px 14px",
-                                borderRadius: 10,
-                                fontWeight: 700,
-                                cursor: "pointer",
-                              }}
-                            >
-                              Delete
-                            </button>
                           </div>
                         </div>
                       );
