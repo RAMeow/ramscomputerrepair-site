@@ -74,7 +74,10 @@ export default function RAMeowPortal({
 }: RAMeowPortalProps) {
   return (
     <main className="page" style={{ background: "transparent" }}>
-      <section className="section-dark" style={{ minHeight: "100vh", paddingTop: 40 }}>
+      <section
+        className="section-dark"
+        style={{ minHeight: "100vh", paddingTop: 40 }}
+      >
         <div className="container">
           <div
             style={{
@@ -103,31 +106,36 @@ export default function RAMeowPortal({
             </a>
           </div>
 
-          <div className="portal-copy" style={{ marginTop: 10 }}>
-  <div
-    style={{
-      fontSize: 20,
-      fontWeight: 700,
-      letterSpacing: ".03em"
-    }}
-  >
-    This is the live RAMeow portal area.
-  </div>
+          <div className="portal-shell">
+            <div className="portal-panel">
+              <p className="portal-kicker">/RAMeow</p>
+              <h1 className="portal-title">RAM's Portal</h1>
 
-  <div
-    style={{
-      fontSize: 26,
-      fontWeight: 900,
-      marginTop: 8,
-      color: "#ef4444",
-      textTransform: "uppercase",
-      letterSpacing: ".06em",
-      textShadow: "0 0 8px rgba(239,68,68,.6)"
-    }}
-  >
-    RAM&apos;S EYES ONLY! KEEP OUT!
-  </div>
-</div>
+              <div className="portal-copy" style={{ marginTop: 10 }}>
+                <div
+                  style={{
+                    fontSize: 20,
+                    fontWeight: 700,
+                    letterSpacing: ".03em",
+                  }}
+                >
+                  Live RAMeow portal area.
+                </div>
+
+                <div
+                  style={{
+                    fontSize: 26,
+                    fontWeight: 900,
+                    marginTop: 8,
+                    color: "#ef4444",
+                    textTransform: "uppercase",
+                    letterSpacing: ".06em",
+                    textShadow: "0 0 8px rgba(239,68,68,.6)",
+                  }}
+                >
+                  RAM'S EYES ONLY! KEEP OUT!
+                </div>
+              </div>
 
               <div className="portal-list" style={{ marginTop: 22 }}>
                 {portalCards.map((card) => (
@@ -174,7 +182,9 @@ export default function RAMeowPortal({
                     marginBottom: 16,
                   }}
                 >
-                  <p style={{ margin: 0, fontWeight: 700 }}>Drag and drop a file here</p>
+                  <p style={{ margin: 0, fontWeight: 700 }}>
+                    Drag and drop a file here
+                  </p>
                   <p style={{ marginTop: 8, color: "#cbd5e1" }}>
                     or use the button below
                   </p>
@@ -268,12 +278,16 @@ export default function RAMeowPortal({
 
                 {filteredFiles.length === 0 ? (
                   <p style={{ color: "#cbd5e1" }}>
-                    {searchTerm ? "No matching files found." : "No files uploaded yet."}
+                    {searchTerm
+                      ? "No matching files found."
+                      : "No files uploaded yet."}
                   </p>
                 ) : (
                   <div style={{ display: "grid", gap: 12 }}>
                     {filteredFiles.map((file) => {
-                      const fileUrl = `/api/download?key=${encodeURIComponent(file.key)}`;
+                      const fileUrl = `/api/download?key=${encodeURIComponent(
+                        file.key
+                      )}`;
 
                       return (
                         <div
@@ -341,10 +355,16 @@ export default function RAMeowPortal({
                             <button
                               type="button"
                               onClick={async () => {
-                                const newName = window.prompt("Enter new filename", file.key);
+                                const newName = window.prompt(
+                                  "Enter new filename",
+                                  file.key
+                                );
                                 if (!newName) return;
 
-                                const success = await renameFile(file.key, newName);
+                                const success = await renameFile(
+                                  file.key,
+                                  newName
+                                );
                                 if (success) {
                                   alert("File renamed.");
                                 }
@@ -424,7 +444,9 @@ export default function RAMeowPortal({
 
                     {inferPreviewType(selectedPreview) === "image" && (
                       <img
-                        src={`/api/download?key=${encodeURIComponent(selectedPreview)}`}
+                        src={`/api/download?key=${encodeURIComponent(
+                          selectedPreview
+                        )}`}
                         alt={selectedPreview}
                         style={{ maxWidth: "100%", borderRadius: 12 }}
                       />
@@ -432,7 +454,9 @@ export default function RAMeowPortal({
 
                     {inferPreviewType(selectedPreview) === "pdf" && (
                       <iframe
-                        src={`/api/download?key=${encodeURIComponent(selectedPreview)}`}
+                        src={`/api/download?key=${encodeURIComponent(
+                          selectedPreview
+                        )}`}
                         title={selectedPreview}
                         style={{
                           width: "100%",
@@ -479,10 +503,13 @@ export default function RAMeowPortal({
                     background: "rgba(255,255,255,.04)",
                   }}
                 >
-                  <h3 style={{ marginTop: 0, marginBottom: 10 }}>Portal Notes</h3>
+                  <h3 style={{ marginTop: 0, marginBottom: 10 }}>
+                    Portal Notes
+                  </h3>
                   <p className="portal-note">
-                    Use this area to manage uploads, review files, preview images or
-                    PDFs, and delete outdated items from your private RAMeow vault.
+                    Use this area to manage uploads, review files, preview images
+                    or PDFs, and delete outdated items from your private RAMeow
+                    vault.
                   </p>
                 </div>
               </div>
