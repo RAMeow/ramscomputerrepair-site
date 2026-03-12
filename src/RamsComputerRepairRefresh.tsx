@@ -50,14 +50,13 @@ export default function RamsComputerRepairRefresh() {
   searchTerm,
   fileInputRef,
   filteredFiles,
-
   setDragActive,
   setSelectedPreview,
   setSearchTerm,
-
   uploadSelectedFile,
   deleteFile,
-  inferPreviewType
+  renameFile,
+  inferPreviewType,
 } = useRAMeowFiles(isPortalRoute);
 
   return (
@@ -206,26 +205,24 @@ export default function RamsComputerRepairRefresh() {
 
         {isPortalRoute ? (
   <RAMeowPortal
-    siteConfig={{
-      businessName: siteConfig.businessName,
-      logoSrc: siteConfig.logoSrc,
-    }}
-    portalCards={portalCards}
-    files={files}
-    uploading={uploading}
-    uploadProgress={uploadProgress}
-    dragActive={dragActive}
-    selectedPreview={selectedPreview}
-    searchTerm={searchTerm}
-    setSearchTerm={setSearchTerm}
-    setDragActive={setDragActive}
-    setSelectedPreview={setSelectedPreview}
-    fileInputRef={fileInputRef}
-    filteredFiles={filteredFiles}
-    inferPreviewType={inferPreviewType}
-    uploadSelectedFile={uploadSelectedFile}
-    deleteFile={deleteFile}
-  />
+  siteConfig={siteConfig}
+  portalCards={portalCards}
+  files={files}
+  uploading={uploading}
+  uploadProgress={uploadProgress}
+  dragActive={dragActive}
+  selectedPreview={selectedPreview}
+  searchTerm={searchTerm}
+  setSearchTerm={setSearchTerm}
+  setDragActive={setDragActive}
+  setSelectedPreview={setSelectedPreview}
+  fileInputRef={fileInputRef}
+  filteredFiles={filteredFiles}
+  inferPreviewType={inferPreviewType}
+  uploadSelectedFile={uploadSelectedFile}
+  deleteFile={deleteFile}
+  renameFile={renameFile}
+/>
         ) : (
             <PublicSite
     siteConfig={{

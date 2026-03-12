@@ -32,6 +32,7 @@ type RAMeowPortalProps = {
   inferPreviewType: (key: string) => "image" | "pdf" | "other";
   uploadSelectedFile: (file: File) => Promise<void>;
   deleteFile: (key: string) => Promise<void>;
+  renameFile: (oldKey: string, newKey: string) => Promise<boolean>;
 };
 
 function PortalNavCard({
@@ -52,6 +53,82 @@ function PortalNavCard({
   );
 }
 
+function getFileIcon(key: string) {
+  const lower = key.toLowerCase();
+
+  /* Windows executables / scripts */
+  if (
+    lower.endsWith(".exe") ||
+    lower.endsWith(".bat") ||
+    lower.endsWith(".cmd") ||
+    lower.endsWith(".ps1") ||
+    lower.endsWith(".msi")
+  ) {
+    return "⚙️";
+  }
+
+  if (lower.endsWith(".pdf")) return "📄";
+
+  if (
+    lower.endsWith(".png") ||
+    lower.endsWith(".jpg") ||
+    lower.endsWith(".jpeg") ||
+    lower.endsWith(".webp") ||
+    lower.endsWith(".gif") ||
+    lower.endsWith(".bmp") ||
+    lower.endsWith(".svg")
+  ) {
+    return "🖼️";
+  }
+
+  if (
+    lower.endsWith(".zip") ||
+    lower.endsWith(".rar") ||
+    lower.endsWith(".7z") ||
+    lower.endsWith(".tar") ||
+    lower.endsWith(".gz")
+  ) {
+    return "🗜️";
+  }
+
+  if (
+    lower.endsWith(".doc") ||
+    lower.endsWith(".docx") ||
+    lower.endsWith(".txt") ||
+    lower.endsWith(".rtf")
+  ) {
+    return "📝";
+  }
+
+  if (
+    lower.endsWith(".xls") ||
+    lower.endsWith(".xlsx") ||
+    lower.endsWith(".csv")
+  ) {
+    return "📊";
+  }
+
+  if (
+    lower.endsWith(".mp4") ||
+    lower.endsWith(".mov") ||
+    lower.endsWith(".avi") ||
+    lower.endsWith(".mkv")
+  ) {
+    return "🎞️";
+  }
+
+  if (
+    lower.endsWith(".mp3") ||
+    lower.endsWith(".wav") ||
+    lower.endsWith(".ogg") ||
+    lower.endsWith(".m4a")
+  ) {
+    return "🎵";
+  }
+
+  return "📁";
+}
+
 export default function RAMeowPortal({
   siteConfig,
   portalCards,
@@ -69,10 +146,14 @@ export default function RAMeowPortal({
   inferPreviewType,
   uploadSelectedFile,
   deleteFile,
+  renameFile,
 }: RAMeowPortalProps) {
   return (
     <main className="page" style={{ background: "transparent" }}>
-      <section className="section-dark" style={{ minHeight: "100vh", paddingTop: 40 }}>
+      <section
+        className="section-dark"
+        style={{ minHeight: "100vh", paddingTop: 40 }}
+      >
         <div className="container">
           <div
             style={{
@@ -104,10 +185,33 @@ export default function RAMeowPortal({
           <div className="portal-shell">
             <div className="portal-panel">
               <p className="portal-kicker">/RAMeow</p>
-              <h1 className="portal-title">Owner Portal</h1>
-              <p className="portal-copy">
-                This is the live RAMeow portal area. RAM&apos;S EYES ONLY! KEEP OUT!
-              </p>
+              <h1 className="portal-title">RAM's Portal</h1>
+
+              <div className="portal-copy" style={{ marginTop: 10 }}>
+                <div
+                  style={{
+                    fontSize: 20,
+                    fontWeight: 700,
+                    letterSpacing: ".03em",
+                  }}
+                >
+                  Live RAMeow portal area.
+                </div>
+
+                <div
+                  style={{
+                    fontSize: 26,
+                    fontWeight: 900,
+                    marginTop: 8,
+                    color: "#ef4444",
+                    textTransform: "uppercase",
+                    letterSpacing: ".06em",
+                    textShadow: "0 0 8px rgba(239,68,68,.6)",
+                  }}
+                >
+                  RAM'S EYES ONLY! KEEP OUT!
+                </div>
+              </div>
 
               <div className="portal-list" style={{ marginTop: 22 }}>
                 {portalCards.map((card) => (
@@ -128,19 +232,29 @@ export default function RAMeowPortal({
                   }}
                   onDragLeave={() => setDragActive(false)}
                   onDrop={async (e) => {
-                    e.preventDefault();
-                    setDragActive(false);
+  e.preventDefault();
+  setDragActive(false);
 
-                    const droppedFile = e.dataTransfer.files?.[0];
-                    if (!droppedFile) return;
+  const droppedFiles = Array.from(e.dataTransfer.files || []);
+  if (droppedFiles.length === 0) return;
 
-                    try {
-                      await uploadSelectedFile(droppedFile);
-                      alert("Upload successful.");
-                    } catch {
-                      alert("Upload failed.");
-                    }
-                  }}
+  let successCount = 0;
+
+  for (const droppedFile of droppedFiles) {
+    try {
+      await uploadSelectedFile(droppedFile);
+      successCount++;
+    } catch {
+      console.error(`Upload failed for ${droppedFile.name}`);
+    }
+  }
+
+  alert(
+    successCount === droppedFiles.length
+      ? `${successCount} file(s) uploaded successfully.`
+      : `${successCount} of ${droppedFiles.length} file(s) uploaded successfully.`
+  );
+}}
                   style={{
                     border: dragActive
                       ? "2px solid #22d3ee"
@@ -172,23 +286,34 @@ export default function RAMeowPortal({
                   </button>
 
                   <input
-                    ref={fileInputRef}
-                    type="file"
-                    style={{ display: "none" }}
-                    onChange={async (e) => {
-                      const chosenFile = e.target.files?.[0];
-                      if (!chosenFile) return;
+  ref={fileInputRef}
+  type="file"
+  multiple
+  style={{ display: "none" }}
+  onChange={async (e) => {
+    const chosenFiles = Array.from(e.target.files || []);
+    if (chosenFiles.length === 0) return;
 
-                      try {
-                        await uploadSelectedFile(chosenFile);
-                        alert("Upload successful.");
-                      } catch {
-                        alert("Upload failed.");
-                      } finally {
-                        e.currentTarget.value = "";
-                      }
-                    }}
-                  />
+    let successCount = 0;
+
+    for (const chosenFile of chosenFiles) {
+      try {
+        await uploadSelectedFile(chosenFile);
+        successCount++;
+      } catch {
+        console.error(`Upload failed for ${chosenFile.name}`);
+      }
+    }
+
+    alert(
+      successCount === chosenFiles.length
+        ? `${successCount} file(s) uploaded successfully.`
+        : `${successCount} of ${chosenFiles.length} file(s) uploaded successfully.`
+    );
+
+    e.currentTarget.value = "";
+  }}
+/>
                 </div>
 
                 {uploading && (
@@ -250,12 +375,16 @@ export default function RAMeowPortal({
 
                 {filteredFiles.length === 0 ? (
                   <p style={{ color: "#cbd5e1" }}>
-                    {searchTerm ? "No matching files found." : "No files uploaded yet."}
+                    {searchTerm
+                      ? "No matching files found."
+                      : "No files uploaded yet."}
                   </p>
                 ) : (
                   <div style={{ display: "grid", gap: 12 }}>
                     {filteredFiles.map((file) => {
-                      const fileUrl = `/api/download?key=${encodeURIComponent(file.key)}`;
+                      const fileUrl = `/api/download?key=${encodeURIComponent(
+                        file.key
+                      )}`;
 
                       return (
                         <div
@@ -273,18 +402,22 @@ export default function RAMeowPortal({
                         >
                           <div style={{ minWidth: 0 }}>
                             <a
-                              href={fileUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              style={{
-                                color: "#67e8f9",
-                                textDecoration: "none",
-                                fontWeight: 600,
-                                wordBreak: "break-word",
-                              }}
-                            >
-                              {file.key}
-                            </a>
+  href={fileUrl}
+  target="_blank"
+  rel="noreferrer"
+  style={{
+    color: "#67e8f9",
+    textDecoration: "none",
+    fontWeight: 600,
+    wordBreak: "break-word",
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
+  }}
+>
+  <span aria-hidden="true">{getFileIcon(file.key)}</span>
+  <span>{file.key}</span>
+</a>
 
                             <div
                               style={{
@@ -322,6 +455,36 @@ export default function RAMeowPortal({
 
                             <button
                               type="button"
+                              onClick={async () => {
+                                const newName = window.prompt(
+                                  "Enter new filename",
+                                  file.key
+                                );
+                                if (!newName) return;
+
+                                const success = await renameFile(
+                                  file.key,
+                                  newName
+                                );
+                                if (success) {
+                                  alert("File renamed.");
+                                }
+                              }}
+                              style={{
+                                border: 0,
+                                background: "#2563eb",
+                                color: "white",
+                                padding: "10px 14px",
+                                borderRadius: 10,
+                                fontWeight: 700,
+                                cursor: "pointer",
+                              }}
+                            >
+                              Rename
+                            </button>
+
+                            <button
+                              type="button"
                               onClick={() => deleteFile(file.key)}
                               style={{
                                 border: 0,
@@ -342,7 +505,50 @@ export default function RAMeowPortal({
                   </div>
                 )}
 
-                {selectedPreview && (
+              </div>
+            </div>
+
+            <div className="portal-panel">
+              <p className="portal-kicker">Dashboard</p>
+              <h2 className="portal-title">Owner file vault</h2>
+
+              <div className="portal-dashboard">
+                <div className="portal-stat-grid">
+                  <div className="portal-stat">
+                    <strong>{files.length}</strong>
+                    <span className="portal-file-meta">Saved files</span>
+                  </div>
+
+                  <div className="portal-stat">
+                    <strong>{filteredFiles.length}</strong>
+                    <span className="portal-file-meta">Visible files</span>
+                  </div>
+
+                  <div className="portal-stat">
+                    <strong>{selectedPreview ? 1 : 0}</strong>
+                    <span className="portal-file-meta">Preview open</span>
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    marginTop: 20,
+                    padding: 18,
+                    borderRadius: 16,
+                    border: "1px solid rgba(255,255,255,.1)",
+                    background: "rgba(255,255,255,.04)",
+                  }}
+                >
+                  <h3 style={{ marginTop: 0, marginBottom: 10 }}>
+                    Portal Notes
+                  </h3>
+                  <p className="portal-note">
+                    Use this area to manage uploads, review files, preview images
+                    or PDFs, and delete outdated items from your private RAMeow
+                    vault.
+                  </p>
+                </div>
+                                {selectedPreview && (
                   <div
                     style={{
                       marginTop: 24,
@@ -382,7 +588,9 @@ export default function RAMeowPortal({
 
                     {inferPreviewType(selectedPreview) === "image" && (
                       <img
-                        src={`/api/download?key=${encodeURIComponent(selectedPreview)}`}
+                        src={`/api/download?key=${encodeURIComponent(
+                          selectedPreview
+                        )}`}
                         alt={selectedPreview}
                         style={{ maxWidth: "100%", borderRadius: 12 }}
                       />
@@ -390,7 +598,9 @@ export default function RAMeowPortal({
 
                     {inferPreviewType(selectedPreview) === "pdf" && (
                       <iframe
-                        src={`/api/download?key=${encodeURIComponent(selectedPreview)}`}
+                        src={`/api/download?key=${encodeURIComponent(
+                          selectedPreview
+                        )}`}
                         title={selectedPreview}
                         style={{
                           width: "100%",
@@ -403,46 +613,6 @@ export default function RAMeowPortal({
                     )}
                   </div>
                 )}
-              </div>
-            </div>
-
-            <div className="portal-panel">
-              <p className="portal-kicker">Dashboard</p>
-              <h2 className="portal-title">Owner file vault</h2>
-
-              <div className="portal-dashboard">
-                <div className="portal-stat-grid">
-                  <div className="portal-stat">
-                    <strong>{files.length}</strong>
-                    <span className="portal-file-meta">Saved files</span>
-                  </div>
-
-                  <div className="portal-stat">
-                    <strong>{filteredFiles.length}</strong>
-                    <span className="portal-file-meta">Visible files</span>
-                  </div>
-
-                  <div className="portal-stat">
-                    <strong>{selectedPreview ? 1 : 0}</strong>
-                    <span className="portal-file-meta">Preview open</span>
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    marginTop: 20,
-                    padding: 18,
-                    borderRadius: 16,
-                    border: "1px solid rgba(255,255,255,.1)",
-                    background: "rgba(255,255,255,.04)",
-                  }}
-                >
-                  <h3 style={{ marginTop: 0, marginBottom: 10 }}>Portal Notes</h3>
-                  <p className="portal-note">
-                    Use this area to manage uploads, review files, preview images or PDFs,
-                    and delete outdated items from your private RAMeow vault.
-                  </p>
-                </div>
               </div>
             </div>
           </div>
