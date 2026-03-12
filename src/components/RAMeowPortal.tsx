@@ -108,10 +108,8 @@ export default function RAMeowPortal({
               <p className="portal-kicker">/RAMeow</p>
               <h1 className="portal-title">RAM'S Portal</h1>
               <p className="portal-copy">
-              <p  This is the live RAMeow portal area. </p>
-              <p RAM'S EYES ONLY! </p>
-              <p KEEP OUT! </p>
-              </p>
+  This is the live RAMeow portal area. RAM&apos;S EYES ONLY! KEEP OUT!
+</p>
 
               <div className="portal-list" style={{ marginTop: 22 }}>
                 {portalCards.map((card) => (
@@ -361,6 +359,7 @@ export default function RAMeowPortal({
   >
     Delete
   </button>
+</div>
 </div>
                             )}
 
