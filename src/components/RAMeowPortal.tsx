@@ -505,7 +505,50 @@ export default function RAMeowPortal({
                   </div>
                 )}
 
-                {selectedPreview && (
+              </div>
+            </div>
+
+            <div className="portal-panel">
+              <p className="portal-kicker">Dashboard</p>
+              <h2 className="portal-title">Owner file vault</h2>
+
+              <div className="portal-dashboard">
+                <div className="portal-stat-grid">
+                  <div className="portal-stat">
+                    <strong>{files.length}</strong>
+                    <span className="portal-file-meta">Saved files</span>
+                  </div>
+
+                  <div className="portal-stat">
+                    <strong>{filteredFiles.length}</strong>
+                    <span className="portal-file-meta">Visible files</span>
+                  </div>
+
+                  <div className="portal-stat">
+                    <strong>{selectedPreview ? 1 : 0}</strong>
+                    <span className="portal-file-meta">Preview open</span>
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    marginTop: 20,
+                    padding: 18,
+                    borderRadius: 16,
+                    border: "1px solid rgba(255,255,255,.1)",
+                    background: "rgba(255,255,255,.04)",
+                  }}
+                >
+                  <h3 style={{ marginTop: 0, marginBottom: 10 }}>
+                    Portal Notes
+                  </h3>
+                  <p className="portal-note">
+                    Use this area to manage uploads, review files, preview images
+                    or PDFs, and delete outdated items from your private RAMeow
+                    vault.
+                  </p>
+                </div>
+                                {selectedPreview && (
                   <div
                     style={{
                       marginTop: 24,
@@ -570,49 +613,6 @@ export default function RAMeowPortal({
                     )}
                   </div>
                 )}
-              </div>
-            </div>
-
-            <div className="portal-panel">
-              <p className="portal-kicker">Dashboard</p>
-              <h2 className="portal-title">Owner file vault</h2>
-
-              <div className="portal-dashboard">
-                <div className="portal-stat-grid">
-                  <div className="portal-stat">
-                    <strong>{files.length}</strong>
-                    <span className="portal-file-meta">Saved files</span>
-                  </div>
-
-                  <div className="portal-stat">
-                    <strong>{filteredFiles.length}</strong>
-                    <span className="portal-file-meta">Visible files</span>
-                  </div>
-
-                  <div className="portal-stat">
-                    <strong>{selectedPreview ? 1 : 0}</strong>
-                    <span className="portal-file-meta">Preview open</span>
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    marginTop: 20,
-                    padding: 18,
-                    borderRadius: 16,
-                    border: "1px solid rgba(255,255,255,.1)",
-                    background: "rgba(255,255,255,.04)",
-                  }}
-                >
-                  <h3 style={{ marginTop: 0, marginBottom: 10 }}>
-                    Portal Notes
-                  </h3>
-                  <p className="portal-note">
-                    Use this area to manage uploads, review files, preview images
-                    or PDFs, and delete outdated items from your private RAMeow
-                    vault.
-                  </p>
-                </div>
               </div>
             </div>
           </div>
